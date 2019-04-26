@@ -1,2 +1,2 @@
 # CloudCapstone
-Cloud Capstone
+Coursera Cloud Capstone
