@@ -7,7 +7,7 @@ def getFileNames():
 	
 	s3 = boto3.client('s3')
 	keys = []
-	resp = s3.list.objects_v2(Bucket='mudabircapstone')
+	resp = s3.list_objects_v2(Bucket='mudabircapstone')
 	for obj in resp['Contents']:
 		keys.append(obj['Key'])
 	
