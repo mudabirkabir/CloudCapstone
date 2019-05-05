@@ -29,7 +29,7 @@ sc = SparkContext(conf = conf)
 #rdd = sc.textFile('s3://%s' % s3Bucket)
 rdd = sc.textFile('s3://%s/Sample.csv' % s3Bucket)
 
-airports = rdd.map(lambda line: line.split(',')).flatmap(lambda row: [row[11],row[17]])
+airports = rdd.map(lambda line: line.split(',')).flatMap(lambda row: [row[11],row[17]])
 
 counts = airports.map(lambda x: (x,1)).reduceByKey(lambda x,y: x+y)
 
