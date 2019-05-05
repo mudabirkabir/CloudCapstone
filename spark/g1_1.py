@@ -38,9 +38,7 @@ counts = airports.map(lambda x: (x,1)).reduceByKey(lambda x,y: x+y)
 #result = counts.sortBy(lambda x: x[1], ascending=False).takeOrdered(10,key=lambda x:-x[1])
 result = counts.takeOrdered(10,key=lambda x:-x[1])
 
-output = result.collect()
-
-for pair in output:
+for pair in result:
 	print('%1' % pair)
 
 #Check what is parallelize
