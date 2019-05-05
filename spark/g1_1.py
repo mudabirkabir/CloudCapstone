@@ -26,8 +26,8 @@ sc = SparkContext(conf = conf)
 # for inputFile in allFiles:
 # 	print(inputFile)
 
-#rdd = sc.textFile('s3://%s' % s3Bucket)
-rdd = sc.textFile('s3://%s/Sample.csv' % s3Bucket)
+rdd = sc.textFile('s3://%s' % s3Bucket)
+#rdd = sc.textFile('s3://%s/Sample.csv' % s3Bucket)
 
 airports = rdd.map(lambda line: line.split(',')).flatMap(lambda row: [row[11],row[17]])
 
