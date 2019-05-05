@@ -19,12 +19,12 @@ def getFileNames():
 conf = SparkConf()
 sc = SparkContext(conf = conf)
 
-allFiles = []
-allFiles = getFileNames()
+# allFiles = []
+# allFiles = getFileNames()
 
-#debugprint
-for inputFile in allFiles:
-	print(inputFile)
+# #debugprint
+# for inputFile in allFiles:
+# 	print(inputFile)
 
 #rdd = sc.textFile('s3://%s' % s3Bucket)
 rdd = sc.textFile('s3://%s/Sample.csv' % s3Bucket)
