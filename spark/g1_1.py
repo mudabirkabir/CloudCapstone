@@ -2,7 +2,7 @@ import os
 from pyspark import SparkConf, SparkContext
 import boto3
 
-s3Bucket = 'mudabircapstonesample'
+s3Bucket = 'mudabircapstone'
 def getFileNames():
 	
 	s3 = boto3.client('s3')
