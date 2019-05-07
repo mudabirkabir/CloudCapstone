@@ -29,7 +29,8 @@ def isFloat(row):
         return True
     except:
         print("Value of row[39] is %s" % (row[39]))
-        sys.exit("Value of row[39] is %s" % (row[39]))
+        #sys.exit("Value of row[39] is %s" % (row[39]))
+        return False
 
 conf = SparkConf()
 sc = SparkContext(conf = conf)
