@@ -30,7 +30,9 @@ allFiles = getFileNames()
 #rdd = sc.textFile('s3://%s/Sample.csv' % s3Bucket)
 rdd = sc.textFile(','.join(allFiles))
 
-flightsDelay = rdd.map(lambda line: line.split(',')).map(lambda row: (row[6],(row[39],1)))
+flightsDelay = rdd.map(lambda line: line.split(','))/
+               .filter(lambda row: int(row[43])== 0) /
+               .map(lambda row: (row[6],(int(row[39]),1)))
 
 totalDelay = flightsDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
