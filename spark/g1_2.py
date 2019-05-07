@@ -14,6 +14,14 @@ def getFileNames():
     return keys
 
 
+def notCancelled(row):
+    try:
+        if (float(row[43]) == 0):
+            return True
+        else:
+            return False
+    except:
+        return False
 
 
 conf = SparkConf()
@@ -31,7 +39,7 @@ allFiles = getFileNames()
 rdd = sc.textFile(','.join(allFiles))
 
 flightsDelay = rdd.map(lambda line: line.split(',')) \
-               .filter(lambda row: float(row[43])== 0) \
+               .filter(notCancelled) \
                .map(lambda row: (row[6],(float(row[39]),1)))
 
 totalDelay = flightsDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
