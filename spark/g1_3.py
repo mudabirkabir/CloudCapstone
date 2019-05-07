@@ -2,7 +2,7 @@ import os
 from pyspark import SparkConf, SparkContext
 import boto3
 
-s3Bucket = 'mudabircapstone'
+s3Bucket = 'mudabircapstonesample'
 def getFileNames():
     
     s3 = boto3.client('s3')
@@ -31,8 +31,8 @@ allFiles = getFileNames()
 rdd = sc.textFile(','.join(allFiles))
 
 flightsDelay = rdd.map(lambda line: line.split(',')) \
-               .filter(lambda row: int(row[43])== 0) \
-               .map(lambda row: (row[4],(int(row[39]),1)))
+               .filter(lambda row: float(row[43])== 0) \
+               .map(lambda row: (row[4],(float(row[39]),1)))
 
 totalDelay = flightsDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
