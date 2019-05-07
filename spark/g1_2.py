@@ -23,6 +23,13 @@ def notCancelled(row):
     except:
         return False
 
+def isFloat(row):
+    try:
+        float(row[39])
+        return True
+    except:
+        print("Value of row[39] is %s" % (row[39]))
+        sys.exit("Value of row[39] is %s" % (row[39]))
 
 conf = SparkConf()
 sc = SparkContext(conf = conf)
@@ -40,6 +47,7 @@ rdd = sc.textFile(','.join(allFiles))
 
 flightsDelay = rdd.map(lambda line: line.split(',')) \
                .filter(notCancelled) \
+               .filter(isFloat) \
                .map(lambda row: (row[6],(float(row[39]),1)))
 
 totalDelay = flightsDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
@@ -52,7 +60,7 @@ avgDelay = totalDelay.mapValues(lambda x: x[0]/x[1])
 result = avgDelay.takeOrdered(10,key=lambda x:-x[1])
 
 for pair in result:
-    print(pair)
+    print pair[0], round(pair[1],2)
 
 #Check what is parallelize
 # >>> sc.parallelize(tmp).sortBy(lambda x: x[0]).collect()
