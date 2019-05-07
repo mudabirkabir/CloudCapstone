@@ -2,7 +2,7 @@ import os
 from pyspark import SparkConf, SparkContext
 import boto3
 
-s3Bucket = 'mudabircapstonesample'
+s3Bucket = 'mudabircapstone'
 def getFileNames():
     
     s3 = boto3.client('s3')
@@ -28,7 +28,7 @@ def isFloat(row):
         return True
     except:
         print("Value of row[39] is %s" % (row[39]))
-        sys.exit("Value of row[39] is %s" % (row[39]))
+        return False
 
 
 conf = SparkConf()
@@ -52,15 +52,15 @@ flightsDelay = rdd.map(lambda line: line.split(',')) \
 
 totalDelay = flightsDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
-avgDelay = totalDelay.mapValues(lambda x: x[0]/x[1])
+avgDelay = totalDelay.mapValues(lambda x: [x[0],x[1],x[0]/x[1]])
 
 #result = counts.map(lambda x: (x[1],x[0])).sortByKey(ascending=False).map(lambda y: (y[1],y[0]))
 
 #result = counts.sortBy(lambda x: x[1], ascending=False).takeOrdered(10,key=lambda x:-x[1])
-result = avgDelay.takeOrdered(10,key=lambda x:-x[1])
+result = avgDelay.takeOrdered(10,key=lambda x:-x[1][2])
 
 for pair in result:
-    print pair[0], round(pair[1],2)
+    print pair[0], pair[1]
 
 
 #Check what is parallelize
