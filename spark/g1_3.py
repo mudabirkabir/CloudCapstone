@@ -48,7 +48,7 @@ rdd = sc.textFile(','.join(allFiles))
 flightsDelay = rdd.map(lambda line: line.split(',')) \
                .filter(notCancelled) \
                .filter(isFloat) \
-               .map(lambda row: (row[4],(float(row[39]),1)))
+               .map(lambda row: (row[4],(float(row[38]),1)))
 
 totalDelay = flightsDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
