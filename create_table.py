@@ -35,27 +35,26 @@ try:
 
         LocalSecondaryIndexes=[
             {
-                "Create": {
 
-                    "IndexName": "AirportsByDepDelay",
+                "IndexName": "AirportsByDepDelay",
 
-                    "KeySchema": [
-                        {
-                            "AttributeName": "Origin",
-                            "KeyType": "HASH"
-                        },
-                        {
-                            "AttributeName": "DepDelay",
-                            "KeyType": "RANGE"
-                        }
-                    ],
-
-                    "Projection": {
-                        "ProjectionType": "ALL"
+                "KeySchema": [
+                    {
+                        "AttributeName": "Origin",
+                        "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "DepDelay",
+                        "KeyType": "RANGE"
                     }
+                ],
+
+                "Projection": {
+                    "ProjectionType": "ALL"
                 }
+                
             }
-        ]
+        ],
 
         ProvisionedThroughput={
             "ReadCapacityUnits": 10,
