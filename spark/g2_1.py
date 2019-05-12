@@ -7,7 +7,7 @@ s3Bucket = 'mudabircapstone'
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-table = dynamodb.Table('Top10Airports')
+table = dynamodb.Table('Top10Carriers')
 
 def getFileNames():
     
@@ -47,7 +47,7 @@ def saveToDynamodb(result):
                 batch.put_item(
                     Item={
                         'Origin': items[0],
-                        'Dest': item[0],
+                        'Carrier': item[0],
                         'DepDelay': decimal.Decimal(str(item[1]))
                     }
                 )
