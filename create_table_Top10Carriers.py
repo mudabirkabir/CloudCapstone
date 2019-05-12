@@ -36,7 +36,7 @@ try:
         LocalSecondaryIndexes=[
             {
 
-                "IndexName": "AirportsByDepDelay",
+                "IndexName": "CarriersByDepDelay",
 
                 "KeySchema": [
                     {
