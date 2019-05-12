@@ -68,8 +68,8 @@ totalDepDelay = airportDepDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
 avgDepDelay = totalDepDelay.mapValues(lambda x: x[0]/x[1])
 
-result = avgDepDelay.map(lambda (k,v): (k[0],(k[1],v))) \
-                    .groupByKey().map(lambda x: (x[0],list(x[1]))) \
+result = avgDepDelay.map(lambda (k,v): (k[0],[k[1],v])) \
+                    .groupByKey()\
                     .map(lambda (k,v): (k, sorted(v,key=lambda x: x[1], reverse = False))).map(lambda (k,v): (k, v[:10]))
 
 
