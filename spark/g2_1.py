@@ -41,14 +41,15 @@ def saveToDynamodb(result):
 
     data = result.collect()
     with table.batch_writer() as batch:
-        for item in data:
-            batch.put_item(
-                Item={
-                    'Origin': item[0],
-                    'Dest': item[1][0],
-                    'DepDelay': item[1][1]
-                }
-            )
+        for items in data:
+            for item in items[1]:
+                batch.put_item(
+                    Item={
+                        'Origin': items[0],
+                        'Dest': item[0],
+                        'DepDelay': item[1]
+                    }
+                )
 
 
 
@@ -73,7 +74,14 @@ result = avgDepDelay.map(lambda (k,v): (k[0],[k[1],v])) \
                     .map(lambda (k,v): (k, sorted(v,key=lambda x: x[1], reverse = False))).map(lambda (k,v): (k, v[:10]))
 
 
-saveToDynamodb(result)
+data = result.collect()
+for items in data:
+    for item in items[1]:
+        print(items[0])
+        print(item[0])
+        print(item[1])
+        break
+#saveToDynamodb(result)
 
 sc.stop()
 
