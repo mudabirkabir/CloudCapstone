@@ -18,11 +18,7 @@ try:
             {
                 "AttributeName": "AtoB",
                 "AttributeType": "S"
-            },
-            {
-                "AttributeName": "ArrDelay",
-                "AttributeType": "N"
-            }           
+            }         
         ],
 
         ProvisionedThroughput={
