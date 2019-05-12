@@ -64,7 +64,7 @@ rdd = sc.textFile(','.join(allFiles))
 airportDepDelay = rdd.map(lambda line: line.split(',')) \
                   .filter(notCancelled) \
                   .filter(isFloat) \
-                  .map(lambda row: ((row[11],row[6]),(float(row[27]),1)))
+                  .map(lambda row: ((row[11],row[18]),(float(row[27]),1)))
 
 totalDepDelay = airportDepDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
