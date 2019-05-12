@@ -42,15 +42,13 @@ def saveToDynamodb(result):
 
     data = result.collect()
     with table.batch_writer() as batch:
-        for items in data:
-            for item in items[0]:
-                batch.put_item(
-                    Item={
-                        'Origin': item[0],
-                        'Dest': item[1],
-                        'ArrDelay': decimal.Decimal(str(items[1]))
-                    }
-                )
+        for item in data:
+            batch.put_item(
+                Item={
+                    'AtoB': item[0],
+                    'ArrDelay': decimal.Decimal(str(item[1]))
+                }
+            )
 
 
 
