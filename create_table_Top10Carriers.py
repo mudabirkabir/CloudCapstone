@@ -61,7 +61,7 @@ try:
             "WriteCapacityUnits": 10
         }
     )
-    client.get_waiter('table_exists').wait(TableName='Top10Airports')
+    client.get_waiter('table_exists').wait(TableName='Top10Carriers')
     print("Table created successfully!")
 except Exception as e:
     print("Error creating table:")
