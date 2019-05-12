@@ -28,7 +28,7 @@ def isFloat(row):
         float(row[39])
         return True
     except:
-        print("Value of row[39] is %s" % (row[39]))
+        print("Value of row[38] is %s" % (row[38]))
         #sys.exit("Value of row[39] is %s" % (row[39]))
         return False
 
