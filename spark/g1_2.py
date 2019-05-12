@@ -25,7 +25,7 @@ def notCancelled(row):
 
 def isFloat(row):
     try:
-        float(row[39])
+        float(row[38])
         return True
     except:
         print("Value of row[38] is %s" % (row[38]))

@@ -7,7 +7,7 @@ s3Bucket = 'mudabircapstone'
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-table = dynamodb.Table('Top10Airports')
+table = dynamodb.Table('MeanDelayBetweenAandB')
 
 def getFileNames():
     
@@ -31,10 +31,10 @@ def notCancelled(row):
 
 def isFloat(row):
     try:
-        float(row[27])
+        float(row[38])
         return True
     except:
-        print("Value of DepDelay is %s" % (row[27]))
+        print("Value of ArrivalDelay is %s" % (row[38]))
         #sys.exit("Value of row[39] is %s" % (row[39]))
         return False
 
@@ -43,12 +43,12 @@ def saveToDynamodb(result):
     data = result.collect()
     with table.batch_writer() as batch:
         for items in data:
-            for item in items[1]:
+            for item in items[0]:
                 batch.put_item(
                     Item={
-                        'Origin': items[0],
-                        'Dest': item[0],
-                        'DepDelay': decimal.Decimal(str(item[1]))
+                        'Origin': item[0],
+                        'Dest': item[1],
+                        'ArrDelay': decimal.Decimal(str(items[1]))
                     }
                 )
 
@@ -64,24 +64,12 @@ rdd = sc.textFile(','.join(allFiles))
 airportDepDelay = rdd.map(lambda line: line.split(',')) \
                   .filter(notCancelled) \
                   .filter(isFloat) \
-                  .map(lambda row: ((row[11],row[18]),(float(row[27]),1)))
+                  .map(lambda row: ((row[11],row[18]),(float(row[38]),1)))
 
 totalDepDelay = airportDepDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
 avgDepDelay = totalDepDelay.mapValues(lambda x: x[0]/x[1])
 
-result = avgDepDelay.map(lambda (k,v): (k[0],[k[1],v])) \
-                    .groupByKey()\
-                    .map(lambda (k,v): (k, sorted(v,key=lambda x: x[1], reverse = False))).map(lambda (k,v): (k, v[:10]))
-
-
-# data = result.collect()
-# for items in data:
-#     for item in items[1]:
-#         print(items[0])
-#         print(item[0])
-#         print(item[1])
-#         break
 saveToDynamodb(result)
 
 sc.stop()
