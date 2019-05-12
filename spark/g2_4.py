@@ -45,7 +45,7 @@ def saveToDynamodb(result):
         for item in data:
             batch.put_item(
                 Item={
-                    'AtoB': item[0],
+                    'AtoB': str(item[0]),
                     'ArrDelay': decimal.Decimal(str(item[1]))
                 }
             )
@@ -59,16 +59,16 @@ allFiles = []
 allFiles = getFileNames()
 rdd = sc.textFile(','.join(allFiles))
 
-airportDepDelay = rdd.map(lambda line: line.split(',')) \
+airportArrDelay = rdd.map(lambda line: line.split(',')) \
                   .filter(notCancelled) \
                   .filter(isFloat) \
                   .map(lambda row: ((row[11],row[18]),(float(row[38]),1)))
 
-totalDepDelay = airportDepDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
+totalArrDelay = airportArrDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
-avgDepDelay = totalDepDelay.mapValues(lambda x: x[0]/x[1])
+avgArrDelay = totalArrDelay.mapValues(lambda x: x[0]/x[1])
 
-saveToDynamodb(result)
+saveToDynamodb(avgArrDelay)
 
 sc.stop()
 

@@ -46,7 +46,7 @@ def saveToDynamodb(result):
             for item in items[1]:
                 batch.put_item(
                     Item={
-                        'AtoB': items[0],
+                        'AtoB': str(items[0]),
                         'Carrier': item[0],
                         'ArrDelay': decimal.Decimal(str(item[1]))
                     }
