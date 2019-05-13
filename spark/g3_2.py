@@ -99,6 +99,12 @@ print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPa
 totalArrDelay.repartition(200)
 print("====++After reparitioning++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
+sample = totalArrDelay.take(10)
+
+"====Received 10 samples ====="
+for data in sample:
+    print(data)
+
 sc.stop()
 
 
