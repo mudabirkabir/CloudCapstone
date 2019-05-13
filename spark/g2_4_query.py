@@ -13,7 +13,7 @@ for combo in task1_queries:
     resp = table.query(
         # Add the name of the index you want to use in your query.
         IndexName="AirportsByDepDelay",
-        KeyConditionExpression=Key('Origin').eq("(u\'\"%s\",u\"%s\"\')" % (combo[0],combo[1])),
+        KeyConditionExpression=Key('Origin').eq("(u\'\"%s\"\',u\'\"%s\"\')" % (combo[0],combo[1])),
     )
 
     print("Mean average delay for source-destination (u\'\"%s\",u\"%s\"\') is :" % (combo[0],combo[1]))
