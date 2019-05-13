@@ -2,6 +2,7 @@ import os
 from pyspark import SparkConf, SparkContext
 import boto3
 import decimal
+import datetime
 
 s3Bucket = 'mudabircapstone'
 
@@ -15,7 +16,8 @@ def getFileNames():
     keys = []
     resp = s3.list_objects_v2(Bucket=s3Bucket)
     for obj in resp['Contents']:
-        keys.append('s3://%s/%s' %(s3Bucket,obj['Key']))
+        if '2008' in obj['Key']:
+            keys.append('s3://%s/%s' %(s3Bucket,obj['Key']))
     
     return keys
 
@@ -31,10 +33,10 @@ def notCancelled(row):
 
 def isFloat(row):
     try:
-        float(row[27])
+        float(row[25])
         return True
     except:
-        print("Value of DepDelay is %s" % (row[27]))
+        print("Value of CRSDepTime is %s" % (row[25]))
         #sys.exit("Value of row[39] is %s" % (row[39]))
         return False
 
@@ -52,8 +54,23 @@ def saveToDynamodb(result):
                     }
                 )
 
+def extractInfo(flight,pm=False):
+    flightDate= datatime.date(int(flight[0]), int(flight[2]),int(flight[3]))
+    yDest = flight[18]
+    if pm:
+        yDest = flight[11]
+        flightDate -= datetime.timedelta(days=2)
+    return ((str(flightDate),yDest),(flight[11], flight[18] , flight[6],flight[10], flight[25], float(flight[38])))
 
-
+# Origin = 11
+# Dest  = 18
+#Airline = 6
+# Flight Number = 10
+# CRSDepTime = 25
+# ArrDelay = 38
+# year = 0
+# Month = 2
+# DayofMonth = 3
 conf = SparkConf()
 sc = SparkContext(conf = conf)
 
@@ -61,28 +78,23 @@ allFiles = []
 allFiles = getFileNames()
 rdd = sc.textFile(','.join(allFiles))
 
-airportDepDelay = rdd.map(lambda line: line.split(',')) \
+runningFlights = rdd.map(lambda line: line.split(',')) \
                   .filter(notCancelled) \
-                  .filter(isFloat) \
-                  .map(lambda row: ((row[11],row[6]),(float(row[27]),1)))
+                  .filter(isFloat) # \
+#                  .map(lambda row: ((row[11],row[6]),(float(row[27]),1)))
 
-totalDepDelay = airportDepDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
+flightXY = runningFlights.filter(lambda x: x[25] < "1200").map(extractInfo)
 
-avgDepDelay = totalDepDelay.mapValues(lambda x: x[0]/x[1])
+flightYZ = runningFlights.filter(lambda x: x[25] > "1200").map(extractInfo, True)
 
-result = avgDepDelay.map(lambda (k,v): (k[0],[k[1],v])) \
-                    .groupByKey()\
-                    .map(lambda (k,v): (k, sorted(v,key=lambda x: x[1], reverse = False))).map(lambda (k,v): (k, v[:10]))
+flightXYZ = flightXY.join(flightYZ)
+
+route = flightXYZ.map(lambda (x,y): ((x[0],y[0],x[1],y[6]),(y,y[5]+y[11]))
+
+totalArrDelay = route.min(lamdba x: x[1][1])
 
 
-# data = result.collect()
-# for items in data:
-#     for item in items[1]:
-#         print(items[0])
-#         print(item[0])
-#         print(item[1])
-#         break
-saveToDynamodb(result)
+saveToDynamodb(totalArrDelay)
 
 sc.stop()
 

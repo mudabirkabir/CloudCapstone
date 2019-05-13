@@ -14,6 +14,6 @@ for combo in task1_queries:
         KeyConditionExpression=Key('AtoB').eq("(u\'\"%s\"\', u\'\"%s\"\')" % (combo[0],combo[1])),
     )
 
-    print("Mean average delay for source-destination (u\'\"%s\"\',u\'\"%s\"\') is :" % (combo[0],combo[1]))
+    print("Mean average delay for source-destination (u\'\"%s\"\', u\'\"%s\"\') is :" % (combo[0],combo[1]))
     for item in resp['Items']:
         print(item)

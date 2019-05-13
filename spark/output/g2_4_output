@@ -1,0 +1,12 @@
+Mean average delay for source-destination (u'"CMI"', u'"ORD"') is :
+{u'AtoB': u'(u\'"CMI"\', u\'"ORD"\')', u'ArrDelay': Decimal('10.1436629064')}
+Mean average delay for source-destination (u'"IND"', u'"CMH"') is :
+{u'AtoB': u'(u\'"IND"\', u\'"CMH"\')', u'ArrDelay': Decimal('2.89113670506')}
+Mean average delay for source-destination (u'"DFW"', u'"IAH"') is :
+{u'AtoB': u'(u\'"DFW"\', u\'"IAH"\')', u'ArrDelay': Decimal('7.61733279859')}
+Mean average delay for source-destination (u'"LAX"', u'"SFO"') is :
+{u'AtoB': u'(u\'"LAX"\', u\'"SFO"\')', u'ArrDelay': Decimal('9.58928273111')}
+Mean average delay for source-destination (u'"JFK"', u'"LAX"') is :
+{u'AtoB': u'(u\'"JFK"\', u\'"LAX"\')', u'ArrDelay': Decimal('6.63511915527')}
+Mean average delay for source-destination (u'"ATL"', u'"PHX"') is :
+{u'AtoB': u'(u\'"ATL"\', u\'"PHX"\')', u'ArrDelay': Decimal('9.02134188151')}
