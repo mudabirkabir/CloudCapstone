@@ -96,12 +96,12 @@ totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
 #saveToDynamodb(totalArrDelay)
-totalArrDelay.repartition(200)
+#totalArrDelay.repartition(200)
 print("====++After reparitioning++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
 sample = totalArrDelay.take(10)
 
-"====Received 10 samples ====="
+print("====Received 10 samples =====")
 for data in sample:
     print(data)
 
