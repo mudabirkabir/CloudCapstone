@@ -11,7 +11,7 @@ task1_queries = [("CMI","ORD"), ("IND","CMH"), ("DFW","IAH"), ("LAX","SFO"), ("J
 
 for combo in task1_queries:
     resp = table.query(
-        KeyConditionExpression=Key('Origin').eq("(u\'\"%s\"\', u\'\"%s\"\')" % (combo[0],combo[1])),
+        KeyConditionExpression=Key('AtoB').eq("(u\'\"%s\"\', u\'\"%s\"\')" % (combo[0],combo[1])),
     )
 
     print("Mean average delay for source-destination (u\'\"%s\"\',u\'\"%s\"\') is :" % (combo[0],combo[1]))
