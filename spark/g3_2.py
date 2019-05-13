@@ -4,7 +4,7 @@ import boto3
 import decimal
 import datetime
 
-s3Bucket = 'mudabircapstonesample'
+s3Bucket = 'mudabircapstone'
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
