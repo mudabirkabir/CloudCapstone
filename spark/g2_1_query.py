@@ -9,12 +9,13 @@ table = dynamodb.Table('Top10Carriers')
 
 task1_queries = ['CMI', 'BWI', 'MIA', 'LAX', 'IAH', 'SFO']
 
-resp = table.query(
-    # Add the name of the index you want to use in your query.
-    IndexName="CarriersByDepDelay",
-    KeyConditionExpression=Key('Origin').eq('Suspense'),
-)
+for origin in task1_queries:
+    resp = table.query(
+        # Add the name of the index you want to use in your query.
+        IndexName="CarriersByDepDelay",
+        KeyConditionExpression=Key('Origin').eq(origin),
+    )
 
-print("The query returned the following items:")
-for item in resp['Items']:
-    print(item)
+    print("The query returned the following items:")
+    for item in resp['Items']:
+        print(item)
