@@ -13,9 +13,9 @@ for origin in task1_queries:
     resp = table.query(
         # Add the name of the index you want to use in your query.
         IndexName="CarriersByDepDelay",
-        KeyConditionExpression=Key('Origin').eq(origin),
+        KeyConditionExpression=Key('Origin').eq("\"%s\"" % origin),
     )
 
-    print("The query returned the following items:")
+    print("Top 10 carriers from Airport %s with best departure delays are:" % origin)
     for item in resp['Items']:
         print(item)
