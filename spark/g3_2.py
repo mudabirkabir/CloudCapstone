@@ -93,7 +93,7 @@ route = flightXYZ.map(lambda (x,y): ((x[0],y[0],x[1],y[6]),(y,y[5]+y[11])))
 
 totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 
-print(totalArrDelay.getNumPartitions())
+print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
 #saveToDynamodb(totalArrDelay)
 
 sc.stop()
