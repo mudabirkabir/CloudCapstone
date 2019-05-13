@@ -1,0 +1,63 @@
+Top 10 carriers from Airport CMI with best departure delays are:
+{u'Origin': u'"CMI"', u'Carrier': u'"OH"', u'DepDelay': Decimal('0.612004950495')}
+{u'Origin': u'"CMI"', u'Carrier': u'"US"', u'DepDelay': Decimal('1.82441045252')}
+{u'Origin': u'"CMI"', u'Carrier': u'"TW"', u'DepDelay': Decimal('3.74458874459')}
+{u'Origin': u'"CMI"', u'Carrier': u'"PI"', u'DepDelay': Decimal('4.36992840095')}
+{u'Origin': u'"CMI"', u'Carrier': u'"DH"', u'DepDelay': Decimal('6.08016032064')}
+{u'Origin': u'"CMI"', u'Carrier': u'"EV"', u'DepDelay': Decimal('6.66513761468')}
+{u'Origin': u'"CMI"', u'Carrier': u'"MQ"', u'DepDelay': Decimal('7.99278155013')}
+Top 10 carriers from Airport BWI with best departure delays are:
+{u'Origin': u'"BWI"', u'Carrier': u'"F9"', u'DepDelay': Decimal('0.746492985972')}
+{u'Origin': u'"BWI"', u'Carrier': u'"PA (1)"', u'DepDelay': Decimal('4.7619047619')}
+{u'Origin': u'"BWI"', u'Carrier': u'"CO"', u'DepDelay': Decimal('5.11380622891')}
+{u'Origin': u'"BWI"', u'Carrier': u'"YV"', u'DepDelay': Decimal('5.50466562986')}
+{u'Origin': u'"BWI"', u'Carrier': u'"NW"', u'DepDelay': Decimal('5.65572947709')}
+{u'Origin': u'"BWI"', u'Carrier': u'"AA"', u'DepDelay': Decimal('5.91884226353')}
+{u'Origin': u'"BWI"', u'Carrier': u'"9E"', u'DepDelay': Decimal('7.220703125')}
+{u'Origin': u'"BWI"', u'Carrier': u'"US"', u'DepDelay': Decimal('7.46098490096')}
+{u'Origin': u'"BWI"', u'Carrier': u'"DL"', u'DepDelay': Decimal('7.64439510571')}
+{u'Origin': u'"BWI"', u'Carrier': u'"UA"', u'DepDelay': Decimal('7.67081427958')}
+Top 10 carriers from Airport MIA with best departure delays are:
+{u'Origin': u'"MIA"', u'Carrier': u'"9E"', u'DepDelay': Decimal('-3.66666666667')}
+{u'Origin': u'"MIA"', u'Carrier': u'"EV"', u'DepDelay': Decimal('1.20264317181')}
+{u'Origin': u'"MIA"', u'Carrier': u'"TZ"', u'DepDelay': Decimal('1.78224355129')}
+{u'Origin': u'"MIA"', u'Carrier': u'"XE"', u'DepDelay': Decimal('1.86266390614')}
+{u'Origin': u'"MIA"', u'Carrier': u'"PA (1)"', u'DepDelay': Decimal('4.0346206211')}
+{u'Origin': u'"MIA"', u'Carrier': u'"NW"', u'DepDelay': Decimal('4.42347767586')}
+{u'Origin': u'"MIA"', u'Carrier': u'"US"', u'DepDelay': Decimal('6.01865229838')}
+{u'Origin': u'"MIA"', u'Carrier': u'"UA"', u'DepDelay': Decimal('6.80827509432')}
+{u'Origin': u'"MIA"', u'Carrier': u'"ML (1)"', u'DepDelay': Decimal('7.51214574899')}
+{u'Origin': u'"MIA"', u'Carrier': u'"PI"', u'DepDelay': Decimal('7.95036991369')}
+Top 10 carriers from Airport LAX with best departure delays are:
+{u'Origin': u'"LAX"', u'Carrier': u'"MQ"', u'DepDelay': Decimal('2.39997814292')}
+{u'Origin': u'"LAX"', u'Carrier': u'"OO"', u'DepDelay': Decimal('4.21409166499')}
+{u'Origin': u'"LAX"', u'Carrier': u'"FL"', u'DepDelay': Decimal('4.68778646535')}
+{u'Origin': u'"LAX"', u'Carrier': u'"TZ"', u'DepDelay': Decimal('4.75888388388')}
+{u'Origin': u'"LAX"', u'Carrier': u'"PS"', u'DepDelay': Decimal('4.80536246276')}
+{u'Origin': u'"LAX"', u'Carrier': u'"NW"', u'DepDelay': Decimal('5.09141672107')}
+{u'Origin': u'"LAX"', u'Carrier': u'"F9"', u'DepDelay': Decimal('5.7212278989')}
+{u'Origin': u'"LAX"', u'Carrier': u'"HA"', u'DepDelay': Decimal('5.81764466178')}
+{u'Origin': u'"LAX"', u'Carrier': u'"YV"', u'DepDelay': Decimal('6.03627906977')}
+{u'Origin': u'"LAX"', u'Carrier': u'"US"', u'DepDelay': Decimal('6.72486724608')}
+Top 10 carriers from Airport IAH with best departure delays are:
+{u'Origin': u'"IAH"', u'Carrier': u'"NW"', u'DepDelay': Decimal('3.5155891222')}
+{u'Origin': u'"IAH"', u'Carrier': u'"PA (1)"', u'DepDelay': Decimal('3.90158343484')}
+{u'Origin': u'"IAH"', u'Carrier': u'"PI"', u'DepDelay': Decimal('3.95216741405')}
+{u'Origin': u'"IAH"', u'Carrier': u'"US"', u'DepDelay': Decimal('5.02979204484')}
+{u'Origin': u'"IAH"', u'Carrier': u'"F9"', u'DepDelay': Decimal('5.54946330142')}
+{u'Origin': u'"IAH"', u'Carrier': u'"AA"', u'DepDelay': Decimal('5.61257119384')}
+{u'Origin': u'"IAH"', u'Carrier': u'"TW"', u'DepDelay': Decimal('6.02750788644')}
+{u'Origin': u'"IAH"', u'Carrier': u'"WN"', u'DepDelay': Decimal('6.23375673947')}
+{u'Origin': u'"IAH"', u'Carrier': u'"OO"', u'DepDelay': Decimal('6.58327180244')}
+{u'Origin': u'"IAH"', u'Carrier': u'"MQ"', u'DepDelay': Decimal('6.70977011494')}
+Top 10 carriers from Airport SFO with best departure delays are:
+{u'Origin': u'"SFO"', u'Carrier': u'"TZ"', u'DepDelay': Decimal('3.93513907446')}
+{u'Origin': u'"SFO"', u'Carrier': u'"MQ"', u'DepDelay': Decimal('4.78269400569')}
+{u'Origin': u'"SFO"', u'Carrier': u'"F9"', u'DepDelay': Decimal('5.15588090551')}
+{u'Origin': u'"SFO"', u'Carrier': u'"PA (1)"', u'DepDelay': Decimal('5.28391427226')}
+{u'Origin': u'"SFO"', u'Carrier': u'"NW"', u'DepDelay': Decimal('5.71754840544')}
+{u'Origin': u'"SFO"', u'Carrier': u'"PS"', u'DepDelay': Decimal('6.25674842845')}
+{u'Origin': u'"SFO"', u'Carrier': u'"DL"', u'DepDelay': Decimal('6.51878609135')}
+{u'Origin': u'"SFO"', u'Carrier': u'"CO"', u'DepDelay': Decimal('7.04735654056')}
+{u'Origin': u'"SFO"', u'Carrier': u'"US"', u'DepDelay': Decimal('7.47516556291')}
+{u'Origin': u'"SFO"', u'Carrier': u'"TW"', u'DepDelay': Decimal('7.76307069219')}
