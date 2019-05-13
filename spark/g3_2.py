@@ -91,10 +91,10 @@ flightXYZ = flightXY.join(flightYZ)
 
 route = flightXYZ.map(lambda (x,y): ((x[0],y[0],x[1],y[6]),(y,y[5]+y[11]))
 
-totalArrDelay = route.min(lamdba x: x[1][1])
+totalArrDelay = route.reduceByKey(lambda y1,y2: (y1 if y1[1] < y2[1]) else y2)
 
-
-saveToDynamodb(totalArrDelay)
+print()
+#saveToDynamodb(totalArrDelay)
 
 sc.stop()
 
