@@ -7,8 +7,7 @@ from boto3.dynamodb.conditions import Key
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 table = dynamodb.Table('Top10Airports')
 
-task1_queries = [("CMI","ORD"), ("IND","CMH"), ("DFW","IAH"), ("LAX","SFO"), 
-                ("JFK","LAX), ("ATL","PHX")]
+task1_queries = [("CMI","ORD"), ("IND","CMH"), ("DFW","IAH"), ("LAX","SFO"), ("JFK","LAX"), ("ATL","PHX")]
 
 for combo in task1_queries:
     resp = table.query(
