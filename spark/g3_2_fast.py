@@ -9,7 +9,7 @@ s3Bucket = 'mudabircapstone'
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-table = dynamodb.Table('BestArrivalTime')
+table = dynamodb.Table('BestArrivalTimeFasr')
 
 def getFileNames():
     
