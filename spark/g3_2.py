@@ -3,6 +3,7 @@ from pyspark import SparkConf, SparkContext
 import boto3
 import decimal
 import datetime
+from time import sleep
 
 s3Bucket = 'mudabircapstone'
 
@@ -42,17 +43,16 @@ def isFloat(row):
 
 def saveToDynamodb(result):
 
-    data = result.collect()
+    data = result.toLocalIterator()
     with table.batch_writer() as batch:
-        for items in data:
-            for item in items[1]:
-                batch.put_item(
-                    Item={
-                        'Origin': items[0],
-                        'Carrier': item[0],
-                        'DepDelay': decimal.Decimal(str(item[1]))
-                    }
-                )
+        for item in data:
+            batch.put_item(
+                Item={
+                    'DateXYZ': str(item[0]),
+                    'info' : str(item[1][0])
+                    'ArrDelay' : decimal.Decimal(str(item[1][1])) 
+                }
+            )
 
 def extractInfo(flight,pm=False):
     flightDate= datetime.date(int(flight[0]), int(flight[2]),int(flight[3]))
@@ -94,16 +94,16 @@ totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 
 #print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
-#saveToDynamodb(totalArrDelay)
+saveToDynamodb(totalArrDelay)
 #totalArrDelay.repartition(200)
 #print("====++After reparitioning++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
-sample = totalArrDelay.take(10)
+#sample = totalArrDelay.take(10)
 
-print("====Received 10 samples =====")
-for data in sample:
-    print(data)
-
+# print("====Received 10 samples =====")
+# for data in sample:
+#     print(data)
+sleep(30)
 sc.stop()
 
 
