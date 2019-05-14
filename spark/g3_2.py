@@ -34,6 +34,7 @@ def notCancelled(row):
 def isFloat(row):
     try:
         float(row[25].strip('\"'))
+        float(row[38].strip('\"'))
         return True
     except:
         print("Value of CRSDepTime is %s" % (row[25]))
@@ -59,7 +60,7 @@ def extractInfo(flight,pm=False):
     if pm:
         yDest = flight[11]
         flightDate -= datetime.timedelta(days=2)
-    return ((str(flightDate),yDest),(flight[11], flight[18] , flight[6],flight[10], flight[25],flight[38], pm))
+    return ((str(flightDate),yDest),(flight[11], flight[18] , flight[6],flight[10], flight[25],float(flight[38].strip('\"'))))
 
 # Origin = 11
 # Dest  = 18
@@ -87,9 +88,9 @@ flightYZ = runningFlights.filter(lambda x: float(x[25].strip('\"')) > 1200).map(
 
 flightXYZ = flightXY.join(flightYZ)
 
-#route = flightXYZ.map(lambda (x,y): ((x[0],y[0],x[1],y[6]),(y,y[5]+y[11])))
+route = flightXYZ.map(lambda (x,y): ((x[0],y[0][0],x[1],y[1][1]),(y,y[0][5]+y[1][5])))
 
-#totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
+totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 
 #print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
@@ -97,7 +98,7 @@ flightXYZ = flightXY.join(flightYZ)
 #totalArrDelay.repartition(200)
 #print("====++After reparitioning++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
-sample = flightXYZ.take(10)
+sample = totalArrDelay.take(10)
 
 print("====Received 10 samples =====")
 for data in sample:
