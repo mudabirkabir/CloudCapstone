@@ -33,11 +33,10 @@ def notCancelled(row):
 
 def isFloat(row):
     try:
-        float(row[25])
+        float(row[25].strip('\"'))
         return True
     except:
         print("Value of CRSDepTime is %s" % (row[25]))
-        #sys.exit("Value of row[39] is %s" % (row[39]))
         return False
 
 def saveToDynamodb(result):
@@ -55,12 +54,12 @@ def saveToDynamodb(result):
                 )
 
 def extractInfo(flight,pm=False):
-    flightDate= datatime.date(int(flight[0]), int(flight[2]),int(flight[3]))
+    flightDate= datetime.date(int(flight[0]), int(flight[2]),int(flight[3]))
     yDest = flight[18]
     if pm:
         yDest = flight[11]
         flightDate -= datetime.timedelta(days=2)
-    return ((str(flightDate),yDest),(flight[11], flight[18] , flight[6],flight[10], flight[25], float(flight[38])))
+    return ((str(flightDate),yDest),(flight[11], flight[18] , flight[6],flight[10], flight[25],flight[38], pm))
 
 # Origin = 11
 # Dest  = 18
@@ -80,26 +79,25 @@ rdd = sc.textFile(','.join(allFiles))
 
 runningFlights = rdd.map(lambda line: line.split(',')) \
                   .filter(notCancelled) \
-                  .filter(isFloat) # \
-#                  .map(lambda row: ((row[11],row[6]),(float(row[27]),1)))
+                  .filter(isFloat)
 
-flightXY = runningFlights.filter(lambda x: x[25] < "1200").map(extractInfo)
+flightXY = runningFlights.filter(lambda x: float(x[25].strip('\"')) < 1200).map(extractInfo)
 
-flightYZ = runningFlights.filter(lambda x: x[25] > "1200").map(extractInfo, True)
+flightYZ = runningFlights.filter(lambda x: float(x[25].strip('\"')) > 1200).map(lambda flight: extractInfo(flight,True))
 
 flightXYZ = flightXY.join(flightYZ)
 
-route = flightXYZ.map(lambda (x,y): ((x[0],y[0],x[1],y[6]),(y,y[5]+y[11])))
+#route = flightXYZ.map(lambda (x,y): ((x[0],y[0],x[1],y[6]),(y,y[5]+y[11])))
 
-totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
+#totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 
-print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
+#print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
 #saveToDynamodb(totalArrDelay)
 #totalArrDelay.repartition(200)
-print("====++After reparitioning++==== : %s" % str(totalArrDelay.getNumPartitions()))
+#print("====++After reparitioning++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
-sample = totalArrDelay.take(10)
+sample = flightXYZ.take(10)
 
 print("====Received 10 samples =====")
 for data in sample:
