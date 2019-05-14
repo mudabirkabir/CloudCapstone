@@ -49,7 +49,7 @@ def saveToDynamodb(result):
             batch.put_item(
                 Item={
                     'DateXYZ': str(item[0]),
-                    'info' : str(item[1][0])
+                    'info' : str(item[1][0]),
                     'ArrDelay' : decimal.Decimal(str(item[1][1])) 
                 }
             )
