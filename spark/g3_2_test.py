@@ -49,7 +49,7 @@ def saveToDynamodb(result):
         for item in data:
             batch.put_item(
                 Item={
-                    'XYZ': str(item[0][1]+ '-' + item[0][2] + '-' item[0][3]),
+                    'XYZ': str(item[0][1]+ '-' + item[0][2] + '-' + item[0][3]),
                     'StartDate': str(item[0][0]),
                     'info' : str(item[1][0]),
                     'ArrDelay' : decimal.Decimal(str(item[1][1])) 
@@ -98,7 +98,7 @@ totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 
 #print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
-#saveToDynamodb(totalArrDelay)
+saveToDynamodb(totalArrDelay)
 #totalArrDelay.repartition(200)
 #print("====++After reparitioning++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
