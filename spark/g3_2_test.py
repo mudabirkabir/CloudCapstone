@@ -9,7 +9,7 @@ s3Bucket = 'mudabircapstone'
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-table = dynamodb.Table('BestArrivalTime')
+table = dynamodb.Table('BestArrivalTimeFinal')
 
 def getFileNames():
     
@@ -38,17 +38,19 @@ def isFloat(row):
         float(row[38].strip('\"'))
         return True
     except:
-        print("Value of CRSDepTime is %s" % (row[25]))
+        #print("Value of CRSDepTime is %s" % (row[25]))
         return False
 
 def saveToDynamodb(result):
 
-    data = result.toLocalIterator()
+    #data = result.toLocalIterator()
+    data = result.collect()
     with table.batch_writer() as batch:
         for item in data:
             batch.put_item(
                 Item={
-                    'DateXYZ': str(item[0]),
+                    'XYZ': str(item[0][1]+ '-' + item[0][2] + '-' item[0][3]),
+                    'StartDate': str(item[0][0]),
                     'info' : str(item[1][0]),
                     'ArrDelay' : decimal.Decimal(str(item[1][1])) 
                 }
@@ -92,7 +94,7 @@ route = flightXYZ.map(lambda (x,y): ((x[0],y[0][0].encode('ascii','ignore'),x[1]
 
 totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 
-route2 = totalArrDelay.filter(lambda line: str(line[0][0]) == '2008-09-09' and 'JAX' in str(line[0][1]) and 'DFW' in str(line[0][2]) and 'CRP' in str(line[0][3]))
+#route2 = totalArrDelay.filter(lambda line: str(line[0][0]) == '2008-09-09' and 'JAX' in str(line[0][1]) and 'DFW' in str(line[0][2]) and 'CRP' in str(line[0][3]))
 
 #print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
@@ -100,11 +102,11 @@ route2 = totalArrDelay.filter(lambda line: str(line[0][0]) == '2008-09-09' and '
 #totalArrDelay.repartition(200)
 #print("====++After reparitioning++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
-sample = route2.take(10)
-print("====Received 10 samples =====")
-for data in sample:
-    print(data)
-sleep(30)
+# sample = route2.take(10)
+# print("====Received 10 samples =====")
+# for data in sample:
+#     print(data)
+# sleep(30)
 sc.stop()
 
 
