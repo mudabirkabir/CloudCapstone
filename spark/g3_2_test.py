@@ -92,7 +92,7 @@ route = flightXYZ.map(lambda (x,y): ((x[0],y[0][0].encode('ascii','ignore'),x[1]
 
 totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 
-route2 = totalArrDelay.filter(lambda line: str(line[0][0]) == '2008-04-03' and 'CMI' in str(line[0][1]) and 'ORD' in str(line[0][2]) and 'LAX' in str(line[0][3]))
+route2 = totalArrDelay.filter(lambda line: str(line[0][0]) == '2008-09-09' and 'JAX' in str(line[0][1]) and 'DFW' in str(line[0][2]) and 'CRP' in str(line[0][3]))
 
 #print("====++Total number of partitions++==== : %s" % str(totalArrDelay.getNumPartitions()))
 
