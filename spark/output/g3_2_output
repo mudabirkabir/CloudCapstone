@@ -1,0 +1,54 @@
+['"CMI"-"ORD"-"LAX"', '2008-03-04']
+Shortest Arrival Delay is -38
+Journey first leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+((u'CMI', u'ORD', u'MQ', u'4278', u'0710', -14.0))
+Journey Second leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+( (u'ORD', u'LAX', u'AA', u'607', u'1950', -24.0))
+----------------------------------
+['"JAX"-"DFW"-"CRP"', '2008-09-09']
+Shortest Arrival Delay is -6
+Journey first leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+((u'JAX', u'DFW', u'AA', u'845', u'0725', 1.0))
+Journey Second leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+( (u'DFW', u'CRP', u'MQ', u'3627', u'1645', -7.0))
+----------------------------------
+['"SLC"-"BFL"-"LAX"', '2008-04-01']
+Shortest Arrival Delay is 18
+Journey first leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+((u'SLC', u'BFL', u'OO', u'3755', u'1100', 12.0))
+Journey Second leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+( (u'BFL', u'LAX', u'OO', u'5429', u'1455', 6.0))
+----------------------------------
+['"DFW"-"ORD"-"DFW"', '2008-06-10']
+Shortest Arrival Delay is -31
+Journey first leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+((u'DFW', u'ORD', u'UA', u'1104', u'0700', -21.0))
+Journey Second leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+( (u'ORD', u'DFW', u'AA', u'2341', u'1645', -10.0))
+----------------------------------
+['"LAX"-"ORD"-"JFK"', '2008-01-01']
+Shortest Arrival Delay is -6
+Journey first leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+((u'LAX', u'ORD', u'UA', u'944', u'0705', 1.0))
+Journey Second leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+( (u'ORD', u'JFK', u'B6', u'918', u'1900', -7.0))
+----------------------------------
+['"LAX"-"SFO"-"PHX"', '2008-07-12']
+Shortest Arrival Delay is -32
+Journey first leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+((u'LAX', u'SFO', u'WN', u'3534', u'0650', -13.0))
+Journey Second leg in below order
+origin, dest, flight, flight number, deptime, Arrival delay
+( (u'SFO', u'PHX', u'US', u'412', u'1925', -19.0))
+----------------------------------
