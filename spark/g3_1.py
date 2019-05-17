@@ -37,9 +37,13 @@ counts = airports.map(lambda x: (x,1)).reduceByKey(lambda x,y: x+y)
 #result = counts.map(lambda x: (x[1],x[0])).sortByKey(ascending=False).map(lambda y: (y[1],y[0]))
 
 #result = counts.sortBy(lambda x: x[1], ascending=False).takeOrdered(10,key=lambda x:-x[1])
-result = counts.sortBy(lambda x: x[1], ascending=False)
+result = counts.sortBy(lambda x: x[1], ascending=False).collect()
 
-result.saveAsTextFile("AirportRanking.log")
+#result.saveAsTextFile("/home/hadoop/CloudCapstone/spark/g3_1.log")
+f = open("g3_1.log","w+")
+for i in result:
+  f.write(str(i)+"\n")
 
+f.close()
 sc.stop()
                     
