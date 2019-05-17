@@ -16,17 +16,21 @@ task3_2_queries = (
                 ['\"DFW\"-\"ORD\"-\"DFW\"', "2008-06-10"],
                 ['\"LAX\"-\"ORD\"-\"JFK\"', "2008-01-01"],
                 ['\"LAX\"-\"SFO\"-\"PHX\"', "2008-07-12"]
+                  )
 
-
-for route in task1_queries:
-    resp = table.query(
-        ProjectionExpression="XYZ, StartDate, info, ArrDelay",
-        KeyConditionExpression=Key('XYZ').eq(route[0]) & key['StartDate'].eq(route[1])
+for route in task3_2_queries:
+    resp = table.get_item(
+        Key={
+        'XYZ': str(route[0]),
+        'StartDate': str(route[1])
+   	}
     )
-
+    print(route)
+    print("Shortest Arrival Delay is %s" % str(resp['Item']['ArrDelay']))
     print("Journey first leg in below order")
     print("origin, dest, flight, flight number, deptime, Arrival delay")
-    print(resp['Items']['info']).split(").")[0] + ')')
+    print(str(resp['Item']['info']).replace('"','').split("),")[0] + '))')
     print("Journey Second leg in below order")
     print("origin, dest, flight, flight number, deptime, Arrival delay")
-    print(resp['Items']['info']).split(").")[1])
+    print('(' + str(resp['Item']['info']).replace('"','').split("),")[1])
+    print("----------------------------------")
