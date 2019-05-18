@@ -40,7 +40,7 @@ allFiles = getFileNames()
 
 rdd = sc.textFile(','.join(allFiles))
 
-# Filter for all non cancelled flights and map (day, (DepDelay,1))
+# Filter for all non cancelled flights and map (day, (ArrDelay,1))
 flightsDelay = rdd.map(lambda line: line.split(',')) \
                .filter(notCancelled) \
                .filter(isFloat) \
@@ -52,13 +52,13 @@ totalDelay = flightsDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 # Get (day, AvgDelay)
 avgDelay = totalDelay.mapValues(lambda x: [x[0],x[1],x[0]/x[1]])
 
-#Sort the days by best Departure delay
+#Sort the days by best Arrival delay
 result = avgDelay.takeOrdered(7,key=lambda x:x[1][2])
 
 days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 for pair in result:
-    print days[pair[0]], pair[1]
+    print days[int(pair[0])-1], pair[1]
 
 sc.stop()
                     

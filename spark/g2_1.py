@@ -35,7 +35,6 @@ def isFloat(row):
         return True
     except:
         print("Value of DepDelay is %s" % (row[27]))
-        #sys.exit("Value of row[39] is %s" % (row[39]))
         return False
 
 def saveToDynamodb(result):
@@ -61,27 +60,24 @@ allFiles = []
 allFiles = getFileNames()
 rdd = sc.textFile(','.join(allFiles))
 
+# Filter for all non cancelled flights and map ((airport,carrier), (DepDelay,1))
 airportDepDelay = rdd.map(lambda line: line.split(',')) \
                   .filter(notCancelled) \
                   .filter(isFloat) \
                   .map(lambda row: ((row[11],row[6]),(float(row[27]),1)))
 
+#get ((airport,carrier), (totalDepDelay, totalCount))
 totalDepDelay = airportDepDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
+#get ((airport,carrier), AvgDepDelay)
 avgDepDelay = totalDepDelay.mapValues(lambda x: x[0]/x[1])
 
+#for each airport, filter 10 best carriers in terms of Dep delay
 result = avgDepDelay.map(lambda (k,v): (k[0],[k[1],v])) \
                     .groupByKey()\
                     .map(lambda (k,v): (k, sorted(v,key=lambda x: x[1], reverse = False))).map(lambda (k,v): (k, v[:10]))
 
-
-# data = result.collect()
-# for items in data:
-#     for item in items[1]:
-#         print(items[0])
-#         print(item[0])
-#         print(item[1])
-#         break
+#Save the data to dynamoDB
 saveToDynamodb(result)
 
 sc.stop()

@@ -40,7 +40,7 @@ allFiles = getFileNames()
 
 rdd = sc.textFile(','.join(allFiles))
 
-# Filter for all non cancelled flights and map (flightID, (DepDelay,1))
+# Filter for all non cancelled flights and map (flightID, (ArrivalDelay,1))
 flightsDelay = rdd.map(lambda line: line.split(',')) \
                .filter(notCancelled) \
                .filter(isFloat) \
