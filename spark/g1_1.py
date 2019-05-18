@@ -26,7 +26,6 @@ airports = rdd.map(lambda line: line.split(',')).flatMap(lambda row: [row[11],ro
 
 counts = airports.map(lambda x: (x,1)).reduceByKey(lambda x,y: x+y)
 
-
 result = counts.takeOrdered(10,key=lambda x:-x[1])
 
 for pair in result:
