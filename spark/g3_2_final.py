@@ -37,7 +37,6 @@ def isFloat(row):
         float(row[38].strip('\"'))
         return True
     except:
-        #print("Value of CRSDepTime is %s" % (row[25]))
         return False
 
 
@@ -65,20 +64,29 @@ allFiles = []
 allFiles = getFileNames()
 rdd = sc.textFile(','.join(allFiles))
 
+#Filter non cancelled flights
 runningFlights = rdd.map(lambda line: line.split(',')) \
                   .filter(notCancelled) \
                   .filter(isFloat)
 
+# RDD for all flights which fly before noon and dest as Y
+##key is (date, Y) -> (flight info)
 flightXY = runningFlights.filter(lambda x: float(x[25].strip('\"')) < 1200).map(extractInfo)
 
+#RDD for all flights which fly after noon with origin as Y and date subtracted by 2 days
+#key is (date-2 days, Y) -> (flight info)
 flightYZ = runningFlights.filter(lambda x: float(x[25].strip('\"')) > 1200).map(lambda flight: extractInfo(flight,True))
 
+#Join is done on (date,Y) as key.
+#this gives all flights landing in Y before noon and all flights departing from Y two days later
 flightXYZ = flightXY.join(flightYZ)
 
 route = flightXYZ.map(lambda (x,y): ((x[0],y[0][0].encode('ascii','ignore'),x[1].encode('ascii','ignore'),y[1][1].encode('ascii','ignore')),(y,y[0][5]+y[1][5])))
 
+# For X->Y->Z route, filter the flight combo with minimum arrival delay
 totalArrDelay = route.reduceByKey(lambda y1,y2: y1 if y1[1] < y2[1] else y2)
 
+#Write data to DynamoDB
 data = totalArrDelay.collect()
 with table.batch_writer() as batch:
     for item in data:
