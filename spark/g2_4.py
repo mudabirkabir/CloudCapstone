@@ -35,7 +35,6 @@ def isFloat(row):
         return True
     except:
         print("Value of ArrivalDelay is %s" % (row[38]))
-        #sys.exit("Value of row[39] is %s" % (row[39]))
         return False
 
 def saveToDynamodb(result):
@@ -51,7 +50,6 @@ def saveToDynamodb(result):
             )
 
 
-
 conf = SparkConf()
 sc = SparkContext(conf = conf)
 
@@ -59,6 +57,7 @@ allFiles = []
 allFiles = getFileNames()
 rdd = sc.textFile(','.join(allFiles))
 
+#Filter for all non cancelled flights and map (origin,dest) -> (ArrDelay,1)
 airportArrDelay = rdd.map(lambda line: line.split(',')) \
                   .filter(notCancelled) \
                   .filter(isFloat) \

@@ -22,24 +22,17 @@ sc = SparkContext(conf = conf)
 allFiles = []
 allFiles = getFileNames()
 
-# #debugprint
-# for inputFile in allFiles:
-#   print(inputFile)
 
-#rdd = sc.textFile('s3://%s//*' % s3Bucket)
-#rdd = sc.textFile('s3://%s/Sample.csv' % s3Bucket)
 rdd = sc.textFile(','.join(allFiles))
 
 airports = rdd.map(lambda line: line.split(',')).flatMap(lambda row: [row[11],row[18]])
 
 counts = airports.map(lambda x: (x,1)).reduceByKey(lambda x,y: x+y)
 
-#result = counts.map(lambda x: (x[1],x[0])).sortByKey(ascending=False).map(lambda y: (y[1],y[0]))
-
-#result = counts.sortBy(lambda x: x[1], ascending=False).takeOrdered(10,key=lambda x:-x[1])
+#Same as g1_1.py until this point
 result = counts.sortBy(lambda x: x[1], ascending=False).collect()
 
-#result.saveAsTextFile("/home/hadoop/CloudCapstone/spark/g3_1.log")
+#Write the results to a text file for plotting
 f = open("g3_1.log","w+")
 for i in result:
   f.write(str(i)+"\n")
