@@ -37,36 +37,28 @@ sc = SparkContext(conf = conf)
 allFiles = []
 allFiles = getFileNames()
 
-# #debugprint
-# for inputFile in allFiles:
-#   print(inputFile)
 
-#rdd = sc.textFile('s3://%s//*' % s3Bucket)
-#rdd = sc.textFile('s3://%s/Sample.csv' % s3Bucket)
 rdd = sc.textFile(','.join(allFiles))
 
+# Filter for all non cancelled flights and map (day, (DepDelay,1))
 flightsDelay = rdd.map(lambda line: line.split(',')) \
                .filter(notCancelled) \
                .filter(isFloat) \
                .map(lambda row: (row[4],(float(row[38]),1)))
 
+# Get (day, (totalDelay,totalCount))
 totalDelay = flightsDelay.reduceByKey(lambda x,y: (x[0]+y[0],x[1]+y[1]))
 
+# Get (day, AvgDelay)
 avgDelay = totalDelay.mapValues(lambda x: [x[0],x[1],x[0]/x[1]])
 
-#result = counts.map(lambda x: (x[1],x[0])).sortByKey(ascending=False).map(lambda y: (y[1],y[0]))
+#Sort the days by best Departure delay
+result = avgDelay.takeOrdered(7,key=lambda x:x[1][2])
 
-#result = counts.sortBy(lambda x: x[1], ascending=False).takeOrdered(10,key=lambda x:-x[1])
-result = avgDelay.takeOrdered(10,key=lambda x:x[1][2])
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 for pair in result:
-    print pair[0], pair[1]
-
-
-#Check what is parallelize
-# >>> sc.parallelize(tmp).sortBy(lambda x: x[0]).collect()
-
-
+    print days[pair[0]], pair[1]
 
 sc.stop()
                     
