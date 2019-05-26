@@ -16,6 +16,11 @@ def notCancelled(row):
     except:
         return False
 
+def printResults(rdd):
+    print "-----------------******* ----------------------"
+    for line in rdd.take(10):
+        print line
+
 def streamOut(items):
     kafka = KafkaClient('172.31.40.107:9092,172.31.44.173:9092,172.31.34.192:9092')
     producer = SimpleProducer(kafka, async=False)
@@ -28,15 +33,11 @@ ssc = StreamingContext(sc, 1)
 
 lines = ssc.textFileStream("s3://%s" % (s3Bucket))
 
-rows = lines.map(lambda line: line.split(',')).filter(nonCancelled)
+rows = lines.map(lambda line: line.split(',')).filter(notCancelled)
 
 reqInfo = rows.map(lambda row: "|".join((row[4],row[6],row[10],row[11], row[18], row[25], row[27], row[38])))
 
-sample = reqInfo.take(10)
-
-#check if parsing is correct
-for item in sample:
-    print(item)
+reqInfo.foreachRDD(lambda rdd: printResults(rdd))
 
 reqInfo.foreachRDD(lambda rdd: rdd.foreachPartition(streamOut))
 
