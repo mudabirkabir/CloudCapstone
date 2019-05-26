@@ -17,7 +17,7 @@ def notCancelled(row):
         return False
 
 def printResults(rdd):
-    print "-----------------******* ----------------------"
+    print "-----------------*******----------------------"
     for line in rdd.take(10):
         print line
 
@@ -31,7 +31,7 @@ sc = SparkContext(appName="streamer")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 1)
 
-lines = ssc.textFileStream("s3://%s" % (s3Bucket))
+lines = ssc.textFileStream("/home/hadoop/input")
 
 rows = lines.map(lambda line: line.split(',')).filter(notCancelled)
 
