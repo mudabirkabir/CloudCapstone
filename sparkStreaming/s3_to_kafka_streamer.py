@@ -16,7 +16,7 @@ def notCancelled(row):
     except:
         return False
 
-def sendToKafka(items):
+def streamOut(items):
     kafka = KafkaClient('172.31.40.107:9092,172.31.44.173:9092,172.31.34.192:9092')
     producer = SimpleProducer(kafka, async=False)
     for item in items:
@@ -38,7 +38,7 @@ sample = reqInfo.take(10)
 for item in sample:
     print(item)
 
-reqInfo.foreachRDD(lambda rdd: rdd.foreachPartition(StreamOut))
+reqInfo.foreachRDD(lambda rdd: rdd.foreachPartition(streamOut))
 
 ssc.start()
 ssc.awaitTermination()
