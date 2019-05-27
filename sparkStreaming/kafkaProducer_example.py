@@ -1,12 +1,9 @@
 from kafka import SimpleProducer, KafkaClient
 
 # To send messages synchronously
-kafka = KafkaClient('localhost:9092')
+kafka = KafkaClient('172.31.40.107:9092,172.31.44.173:9092,172.31.34.192:9092')
 producer = SimpleProducer(kafka)
 
 # Note that the application is responsible for encoding messages to type bytes
-producer.send_messages(b'my-topic', b'some message')
-producer.send_messages(b'my-topic', b'this method', b'is variadic')
-
-# Send unicode message
-producer.send_messages(b'my-topic', u'你怎么样?'.encode('utf-8'))
+producer.send_messages('test', 'some message'.encode())
+producer.send_messages('test', 'this')
