@@ -5,7 +5,7 @@ from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 from kafka import SimpleProducer, KafkaClient
 
-s3Bucket = 'mudabircapstonesample'
+s3Bucket = 'mudabircapstonesample3'
 
 def notCancelled(row):
     try:
@@ -29,9 +29,9 @@ def streamOut(items):
 
 sc = SparkContext(appName="streamer")
 sc.setLogLevel("ERROR")
-ssc = StreamingContext(sc, 1)
+ssc = StreamingContext(sc, 3)
 
-lines = ssc.textFileStream("/home/hadoop/input")
+lines = ssc.textFileStream("hdfs:///user/root/input")
 
 rows = lines.map(lambda line: line.split(',')).filter(notCancelled)
 
