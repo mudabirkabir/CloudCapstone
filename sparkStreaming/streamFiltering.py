@@ -32,7 +32,7 @@ rows = lines.map(lambda line: line.replace('"', '')).map(lambda line: line.split
 
 reqInfo = rows.map(lambda row: "|".join((row[0],row[2],row[3],row[4],row[6],row[10],row[11], row[18], row[25], row[27], row[38])))
 
-f = open("filteredData","w+")
+f = open("/home/hadoop/output/filteredData","w+")
 reqInfo.foreachRDD(lambda rdd: writeToFile(rdd,f))
 
 #reqInfo.foreachRDD(lambda rdd: rdd.foreachPartition(streamOut))
