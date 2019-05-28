@@ -19,8 +19,8 @@ kafkaParams = {"metadata.broker.list": "172.31.40.107:9092,172.31.44.173:9092,17
 #self._kafkaTestUtils.createTopic(topic)
 #self._kafkaTestUtils.sendMessages(topic, sendData)
 
-stream = KafkaUtils.createDirectStream(self.ssc, ['test'], kafkaParams)
+stream = KafkaUtils.createDirectStream(ssc, ['test'], kafkaParams)
 
 stream.foreachRDD(lambda rdd: printBatch(rdd))
-self.ssc.start()
+ssc.start()
 ssc.awaitTermination()
