@@ -23,6 +23,8 @@ kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east
 
 stream = KafkaUtils.createDirectStream(ssc, ['testing'], kafkaParams, fromOffsets = fromOffset)
 
-stream.foreachRDD(lambda rdd: printBatch(rdd))
+check = stream.transform(lambda rdd: rdd.sortBy(lambda x: x[1]))
+
+check.foreachRDD(lambda rdd: printBatch(rdd))
 ssc.start()
 ssc.awaitTermination()

@@ -43,5 +43,5 @@ sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: -x[1]))
 sorted_counts.foreachRDD(lambda rdd: printResult(rdd))
 
 ssc.start()
-ssc.awaitTerminationorTimeOut(6000)
+ssc.awaitTermination()
 f.close()                   
