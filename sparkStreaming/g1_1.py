@@ -8,8 +8,8 @@ def updateFunction(newValues, runningCount):
         runningCount = 0
     return sum(newValues, runningCount)
 
-def printResult(rdd:
-    result = rdd.takeOrdered(10,key=lambda x:-x[1])
+def printResult(rdd):
+    result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
     for airport in result:
         print(airport)
 
@@ -17,11 +17,10 @@ sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
 
-kafkaParams = {"metadata.broker.list": "172.31.40.107:9092,172.31.44.173:9092,172.31.34.192:9092",
-               "auto.offset.reset": "smallest"}
+kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092"}
 
 
-stream = KafkaUtils.createDirectStream(ssc, ['airports'], kafkaParams)
+stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams)
 
 '''
 The incoming data format is
@@ -34,7 +33,9 @@ airports = rdd.map(lambda line: line.split('|')).flatMap(lambda row: [row[6],row
 
 counts = airports.map(lambda x: (x,1)).updateStateByKey(updateFunction)
 
-counts.foreachRDD(lamdba rdd: printResult(rdd))
+sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: -x[1]))
+
+counts.foreachRDD(lambda rdd: printResult(rdd))
 
 
 scc.start()
