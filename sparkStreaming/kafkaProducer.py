@@ -1,14 +1,13 @@
 import os
-from kafka import SimpleProducer, KafkaClient
+from kafka import KafkaProducer
 
 # To send messages synchronously
-kafka = KafkaClient('172.31.40.107:9092,172.31.44.173:9092,172.31.34.192:9092')
-producer = SimpleProducer(kafka)
 
+producer = KafkaProducer(bootstrap_servers=['b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092','b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092','b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092'],batch_size=98304,linger_ms=100)
 
 file = open('/home/hadoop/output/filteredData', 'r')
 
 for line in file:
-    producer.send_messages('airports', line)
+    producer.send('airports', line)
 
 file.close()
