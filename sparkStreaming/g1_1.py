@@ -1,7 +1,7 @@
 import os
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
-from pyspark.streaming.kafka import KafkaUtils
+from pyspark.streaming.kafka import KafkaUtils,OffsetRange,TopicAndPartition
 
 
 def updateFunction(newValues, runningCount):
@@ -13,16 +13,18 @@ def printResult(rdd,f):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
     for airport in result:
         print(airport)
-        f.write(airport+"\n")
+        f.write(str(airport)+"\n")
 
 sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
 ssc.checkpoint("s3://mudabircapstonecheckpoint/top10airports/")
+topicPartition = TopicAndPartition("airportsFull", 0)
+fromOffset = {topicPartition: 0 }
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092"}
 
 
-stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams)
+stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams, fromOffsets = fromOffset)
 
 '''
 The incoming data format is
@@ -37,7 +39,7 @@ counts = airports.map(lambda x: (x,1)).updateStateByKey(updateFunction)
 
 sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: -x[1]))
 
-f =  open("/home/hadoop/CloudCapstone\sparkStreaming\output\g1_1","w+")
+f =  open("output/g1_1.log","w+")
 counts.foreachRDD(lambda rdd: printResult(rdd,f))
 
 
