@@ -13,7 +13,7 @@ def printResult(rdd,f):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
     for airport in result:
         print(airport)
-        f.write(str(airport)+"\n")
+        #f.write(str(airport)+"\n")
 
 sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
@@ -21,11 +21,10 @@ ssc = StreamingContext(sc, 3)
 ssc.checkpoint("s3://mudabircapstonecheckpoint/top10airports/")
 topicPartition = TopicAndPartition("airportsFull", 0)
 fromOffset = {topicPartition: 0 }
-kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092"}
+kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092","auto.offset.reset": "smallest"}
 
 
 stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams, fromOffsets = fromOffset)
-
 '''
 The incoming data format is
 Year|Month|date|DayofWeek|UniqueCarrier|FlightNum|Origin|Dest|CRSDeptime|DepDelay|ArrDelay
@@ -39,10 +38,10 @@ counts = airports.map(lambda x: (x,1)).updateStateByKey(updateFunction)
 
 sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: -x[1]))
 
-f =  open("output/g1_1.log","w+")
-counts.foreachRDD(lambda rdd: printResult(rdd,f))
-
+#f =  open("output/g1_1.log","w+")
+#counts.foreachRDD(lambda rdd: printResult(rdd,f))
+sorted_counts.foreachRDD(lambda rdd: printResult(rdd))
 
 ssc.start()
-ssc.awaitTermination()
+ssc.awaitTerminationorTimeOut(6000)
 f.close()                   
