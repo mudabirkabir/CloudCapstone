@@ -13,13 +13,13 @@ ssc = StreamingContext(sc, 3)
 
 #topic = self._randomTopic()
 #sendData = {"a": 1, "b": 2, "c": 3}
-kafkaParams = {"metadata.broker.list": "172.31.40.107:9092,172.31.44.173:9092,172.31.34.192:9092",
+kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092",
                "auto.offset.reset": "smallest"}
 
 #self._kafkaTestUtils.createTopic(topic)
 #self._kafkaTestUtils.sendMessages(topic, sendData)
 
-stream = KafkaUtils.createDirectStream(ssc, ['test'], kafkaParams)
+stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams)
 
 stream.foreachRDD(lambda rdd: printBatch(rdd))
 ssc.start()
