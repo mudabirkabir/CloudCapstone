@@ -1,4 +1,5 @@
 import os
+import signal
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils,OffsetRange,TopicAndPartition
@@ -9,12 +10,17 @@ def updateFunction(newValues, runningCount):
         runningCount = 0
     return sum(newValues, runningCount)
 
-def printResult(rdd,f):
+def printResult(rdd):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
     for airport in result:
         print(airport)
         #f.write(str(airport)+"\n")
 
+def stopStreamer(signal, frame):
+    ssc.stop(True,True)
+
+
+signal.signal(signal.SIGINT, stopStreamer)
 sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
@@ -23,7 +29,7 @@ topicPartition = TopicAndPartition("airportsFull", 0)
 fromOffset = {topicPartition: 114340000}
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092",
 "auto.offset.reset": "smallest",
-"consumer.timeout.ms" : 10000 }
+"consumer.timeout.ms" : 60000 }
 
 
 stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams, fromOffsets = fromOffset)
@@ -45,5 +51,5 @@ sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: -x[1]))
 sorted_counts.foreachRDD(lambda rdd: printResult(rdd))
 
 ssc.start()
-ssc.awaitTermination()
+#ssc.awaitTermination()
 #f.close()                   
