@@ -20,8 +20,10 @@ sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
 ssc.checkpoint("s3://mudabircapstonecheckpoint/top10airports/")
 topicPartition = TopicAndPartition("airportsFull", 0)
-fromOffset = {topicPartition: 0 }
-kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092","auto.offset.reset": "smallest"}
+fromOffset = {topicPartition: 114340000}
+kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092",
+"auto.offset.reset": "smallest",
+"consumer.timeout.ms" : 10000 }
 
 
 stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams, fromOffsets = fromOffset)
@@ -44,4 +46,4 @@ sorted_counts.foreachRDD(lambda rdd: printResult(rdd))
 
 ssc.start()
 ssc.awaitTermination()
-f.close()                   
+#f.close()                   
