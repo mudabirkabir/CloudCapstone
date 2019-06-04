@@ -25,14 +25,17 @@ sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
 ssc.checkpoint("s3://mudabircapstonecheckpoint/top10airports/")
-topicPartition = TopicAndPartition("airportsFull", 0)
-fromOffset = {topicPartition: 114340000}
+topicPartition0 = TopicAndPartition("airportsFull", 0)
+topicPartition1 = TopicAndPartition("airportsFull", 1)
+topicPartition2 = TopicAndPartition("airportsFull", 2)
+topicPartition3 = TopicAndPartition("airportsFull", 3)
+fromOffset = {topicPartition0: 0,topicPartition1: 0,topicPartition2: 0,topicPartition3: 0}
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092",
-"auto.offset.reset": "smallest",
-"consumer.timeout.ms" : 60000 }
+"auto.offset.reset": "smallest"}
+#"consumer.timeout.ms" : 60000 }
 
 
-stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams, fromOffsets = fromOffset)
+stream = KafkaUtils.createDirectStream(ssc, ['airportsWithCancelled'], kafkaParams, fromOffsets = fromOffset)
 '''
 The incoming data format is
 Year|Month|date|DayofWeek|UniqueCarrier|FlightNum|Origin|Dest|CRSDeptime|DepDelay|ArrDelay
