@@ -19,23 +19,34 @@ def printResult(rdd):
 def stopStreamer(signal, frame):
     ssc.stop(True,True)
 
+def takeTop10(iterable):
+    topTen = []
+    for tupl in iterable:
+        if len(topTen) < 10:
+            topTen.append(tupl)
+            topTen.sort(reverse=True)
+        elif topTen[9][0] < tupl[0]:
+            topTen[9] = tupl
+            topTen.sort(reverse=True)
+    return iter(topTen)
 
 signal.signal(signal.SIGINT, stopStreamer)
 sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
 ssc.checkpoint("s3://mudabircapstonecheckpoint/top10airports/")
-topicPartition0 = TopicAndPartition("airportsFull", 0)
-topicPartition1 = TopicAndPartition("airportsFull", 1)
-topicPartition2 = TopicAndPartition("airportsFull", 2)
-topicPartition3 = TopicAndPartition("airportsFull", 3)
-fromOffset = {topicPartition0: 0,topicPartition1: 0,topicPartition2: 0,topicPartition3: 0}
+# topicPartition0 = TopicAndPartition("airportsFull", 0)
+# topicPartition1 = TopicAndPartition("airportsFull", 1)
+# topicPartition2 = TopicAndPartition("airportsFull", 2)
+# topicPartition3 = TopicAndPartition("airportsFull", 3)
+#fromOffset = {topicPartition0: 0,topicPartition1: 0,topicPartition2: 0,topicPartition3: 0}
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092",
 "auto.offset.reset": "smallest"}
 #"consumer.timeout.ms" : 60000 }
 
 
-stream = KafkaUtils.createDirectStream(ssc, ['airportsWithCancelled'], kafkaParams, fromOffsets = fromOffset)
+stream = KafkaUtils.createDirectStream(ssc, ['airportsWithCancelled'], kafkaParams)
+#, fromOffsets = fromOffset)
 '''
 The incoming data format is
 Year|Month|date|DayofWeek|UniqueCarrier|FlightNum|Origin|Dest|CRSDeptime|DepDelay|ArrDelay
@@ -47,10 +58,13 @@ airports = rdd.map(lambda line: line.split('|')).flatMap(lambda row: [row[6],row
 
 counts = airports.map(lambda x: (x,1)).updateStateByKey(updateFunction)
 
-sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: -x[1]))
+sorted_partition = counts.transform(lambda rdd: rdd.mapPartitions(takeTop10))
+
+sorted_counts = sorted_partition.transform(lambda rdd: rdd.sortBy(lambda x: -x[1]))
 
 #f =  open("output/g1_1.log","w+")
 #counts.foreachRDD(lambda rdd: printResult(rdd,f))
+
 sorted_counts.foreachRDD(lambda rdd: printResult(rdd))
 
 ssc.start()

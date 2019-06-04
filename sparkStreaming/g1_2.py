@@ -9,7 +9,7 @@ def updateFunction(newValues, runningCount):
     delaySum = sum(newValues[0], runningCount[0])
     count    = runningCount[1] + newValues[1]
     avgArrivalDelay = delaySum/count
-    return(delaySum,count,avgArrivalDelay)
+    return (delaySum,count,avgArrivalDelay)
 
 def printResult(rdd):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
@@ -20,10 +20,10 @@ sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
 
-kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092"}
+kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092","auto.offset.reset":"smallest"}
 
 
-stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams)
+stream = KafkaUtils.createDirectStream(ssc, ['airportsWithCancelled'], kafkaParams)
 
 '''
 The incoming data format is
@@ -36,7 +36,7 @@ flightsDelay = rdd.map(lambda line: line.split('|')).map(lambda row: (row[4],(fl
 
 counts = flightsDelay.updateStateByKey(updateFunction)
 
-sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: -x[1][2]))
+sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: x[2]))
 
 counts.foreachRDD(lambda rdd: printResult(rdd))
 
