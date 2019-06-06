@@ -16,14 +16,22 @@ def printResult(rdd):
     for airport in result:
         print(airport)
 
+def isFloat(row):
+    try:
+        float(row[10])
+        return True
+    except:
+        return False
+
 sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
+topicPartition = TopicAndPartition("airportsFull", 0)
+fromOffset = {topicPartition: 0}
+kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092"}
 
-kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092","auto.offset.reset":"smallest"}
 
-
-stream = KafkaUtils.createDirectStream(ssc, ['airportsWithCancelled'], kafkaParams)
+stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams, fromOffsets = fromOffset)
 
 '''
 The incoming data format is
@@ -32,15 +40,15 @@ Year|Month|date|DayofWeek|UniqueCarrier|FlightNum|Origin|Dest|CRSDeptime|DepDela
 
 rdd = stream.map(lambda x: x[1])
 
-flightsDelay = rdd.map(lambda line: line.split('|')).map(lambda row: (row[4],(float(row[10]),1)))
+flightsDelay = rdd.map(lambda line: line.split('|')).filter(isFloat).map(lambda row: (row[4],(float(row[10]),1)))
 
 counts = flightsDelay.updateStateByKey(updateFunction)
 
-sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: x[2]))
+sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: x[1][2]))
 
-counts.foreachRDD(lambda rdd: printResult(rdd))
+sorted_counts.foreachRDD(lambda rdd: printResult(rdd))
 
 
-scc.start()
+ssc.start()
 ssc.awaitTermination()
                     

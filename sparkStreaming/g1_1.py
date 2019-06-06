@@ -44,7 +44,6 @@ airports = rdd.map(lambda line: line.split('|')).flatMap(lambda row: [row[6],row
 
 counts = airports.map(lambda x: (x,1)).updateStateByKey(updateFunction)
 
-
 sorted_counts = counts.transform(lambda rdd: rdd.sortBy(lambda x: -x[1]))
 
 #f =  open("output/g1_1.log","w+")
