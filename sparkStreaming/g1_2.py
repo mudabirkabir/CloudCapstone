@@ -42,7 +42,7 @@ Year|Month|date|DayofWeek|UniqueCarrier|FlightNum|Origin|Dest|CRSDeptime|DepDela
 
 rdd = stream.map(lambda x: x[1])
 
-flightsDelay = rdd.map(lambda line: line.split('|')).filter(isFloat).map(lambda row: (row[4],(float(row[10]),1)))
+flightsDelay = rdd.map(lambda line: line.split('|')).filter(isFloat).map(lambda row: (row[4],float(row[10])))
 
 counts = flightsDelay.updateStateByKey(updateFunction)
 
