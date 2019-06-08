@@ -1,6 +1,7 @@
 import os
 from pyspark import SparkConf, SparkContext
-from pyspark.streaming.kafka import KafkaUtils
+from pyspark.streaming import StreamingContext
+from pyspark.streaming.kafka import KafkaUtils,OffsetRange,TopicAndPartition
 import boto3
 import decimal
 
@@ -57,6 +58,7 @@ def isFloat(row):
 sc = SparkContext(appName="top10carriersByairports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
+ssc.checkpoint("s3://mudabircapstonecheckpoint/top10carriersByairport/")
 topicPartition = TopicAndPartition("airportsFull", 0)
 fromOffset = {topicPartition: 0}
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092"}
@@ -82,6 +84,6 @@ result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,sortA
 result.foreachRDD(saveToDynamodb)
 
 
-sSc.start()
+ssc.start()
 ssc.awaitTermination()
                     
