@@ -26,7 +26,7 @@ ssc.checkpoint("s3://mudabircapstonecheckpoint/top10airports/")
 # topicPartition2 = TopicAndPartition("airportsFull", 2)
 # topicPartition3 = TopicAndPartition("airportsFull", 3)
 #fromOffset = {topicPartition0: 0,topicPartition1: 0,topicPartition2: 0,topicPartition3: 0}
-kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092",
+kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092",
 "auto.offset.reset": "smallest"}
 #"consumer.timeout.ms" : 60000 }
 

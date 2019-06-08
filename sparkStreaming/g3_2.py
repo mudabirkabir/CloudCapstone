@@ -66,7 +66,7 @@ sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
 topicPartition = TopicAndPartition("airportsAll2", 0)
 fromOffset = {topicPartition: 0}
-kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.kfbj9j.c2.kafka.us-east-1.amazonaws.com:9092"}
+kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092"}
 
 
 stream = KafkaUtils.createDirectStream(ssc, ['airportsAll2'], kafkaParams, fromOffsets = fromOffset)
