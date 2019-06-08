@@ -79,7 +79,7 @@ avgDepDelay = flightsDelay.updateStateByKey(updateFunction)
 
 avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1][2])))
 
-result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,sortAll))
+result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,merge))
 
 result.foreachRDD(saveToDynamodb)
 
