@@ -46,6 +46,15 @@ def saveToDynamodb(rdd):
                         'DepDelay': decimal.Decimal(str(item[1]))
                     }
                 )'''
+    for items in data:
+        for item in items[1]:
+            table.put_item(
+                Item={
+                    'Origin': items[0],
+                    'Carrier': item[0],
+                    'DepDelay': decimal.Decimal(str(item[1]))
+                }
+            )
 
 
 def isFloat(row):
