@@ -15,7 +15,7 @@ def updateFunction(newValues, runningCount):
     depDelaySum = sum(newValues, runningCount[0])
     count    = runningCount[1] + len(newValues)
     avgDepDelay = depDelaySum/float(count)
-    return (depDelay,count, avgDepDelay)
+    return (depDelaySum,count, avgDepDelay)
 
 def printResult(rdd):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
@@ -29,7 +29,7 @@ def sortLocal(top10, newVal):
 
 def merge(list1, list2):
     for x in list2:
-        list1.append(list2)
+        list1.append(x)
     list1.sort(key=lambda element: element[1])
     return list1[0:10]
 
@@ -81,8 +81,8 @@ avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1][2])))
 
 result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,merge))
 
-result.foreachRDD(saveToDynamodb)
-
+result.foreachRDD(lambda rdd: printResult(rdd))
+result.foreachRDD(lamdda rdd: saveToDynamodb(rdd))
 
 ssc.start()
 ssc.awaitTermination()
