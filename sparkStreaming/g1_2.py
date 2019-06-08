@@ -1,14 +1,15 @@
 import os
 from pyspark import SparkConf, SparkContext
-from pyspark.streaming.kafka import KafkaUtils
+from pyspark.streaming import StreamingContext
+from pyspark.streaming.kafka import KafkaUtils,OffsetRange,TopicAndPartition
 
 
 def updateFunction(newValues, runningCount):
     if runningCount is None:
         runningCount = (0, 0, 0)
-    delaySum = sum(newValues[0], runningCount[0])
-    count    = runningCount[1] + newValues[1]
-    avgArrivalDelay = delaySum/count
+    delaySum = sum(newValues, runningCount[0])
+    count    = runningCount[1] + len(newValues)
+    avgArrivalDelay = delaySum/float(count)
     return (delaySum,count,avgArrivalDelay)
 
 def printResult(rdd):
@@ -26,6 +27,7 @@ def isFloat(row):
 sc = SparkContext(appName="top10airports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
+ssc.checkpoint("s3://mudabircapstonecheckpoint/top10carriers/")
 topicPartition = TopicAndPartition("airportsFull", 0)
 fromOffset = {topicPartition: 0}
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092"}
