@@ -11,10 +11,10 @@ table = dynamodb.Table('Top10Airports2')
 def updateFunction(newValues, runningCount):
     if runningCount is None:
         runningCount = (0, 0, 0)
-    depDelaySum = sum(newValues[0], runningCount[0])
-    count    = runningCount[1] + newValues[1]
+    depDelaySum = sum(newValues, runningCount[0])
+    count    = runningCount[1] + len(newValues)
     avgDepDelay = depDelaySum/count
-    return avgDepDelay
+    return (depDelaySum,count,avgDepDelay)
 
 def printResult(rdd):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
@@ -71,11 +71,11 @@ Year|Month|date|DayofWeek|UniqueCarrier|FlightNum|Origin|Dest|CRSDeptime|DepDela
 
 rdd = stream.map(lambda x: x[1])
 
-flightsDelay = rdd.map(lambda line: line.split('|')).filter(isFloat).map(lambda row: ((row[6],row[7]),(float(row[9]),1)))
+flightsDelay = rdd.map(lambda line: line.split('|')).filter(isFloat).map(lambda row: ((row[6],row[7]),float(row[9])))
 
 avgDepDelay = flightsDelay.updateStateByKey(updateFunction)
 
-avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1])))
+avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1][2])))
 
 result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,sortAll))
 
