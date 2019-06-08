@@ -2,12 +2,16 @@ import os
 from pyspark import SparkConf, SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils,OffsetRange,TopicAndPartition
-import boto3
+#import boto3
+from boto import dynamodb2
+from boto.dynamodb2.table import Table,Item
 import decimal
 
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+#dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+#table = dynamodb.Table('Top10Carriers2')
+dynamoDB = dynamodb2.connect_to_region('us-east-1')
+dyntable = Table('Top10Carriers2', connection = dynamoDB)
 
-table = dynamodb.Table('Top10Carriers2')
 
 def updateFunction(newValues, runningCount):
     if runningCount is None:
@@ -48,13 +52,13 @@ def saveToDynamodb(rdd):
                 )'''
     for items in data:
         for item in items[1]:
-            table.put_item(
-                Item={
+            entry = Item(dyntable, data={
                     'Origin': items[0],
                     'Carrier': item[0],
                     'DepDelay': decimal.Decimal(str(item[1]))
                 }
             )
+            entry.save(overwrite=True)
 
 
 def isFloat(row):
