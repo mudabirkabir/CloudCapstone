@@ -33,10 +33,10 @@ def merge(list1, list2):
     list1.sort(key=lambda element: element[1])
     return list1[0:10]
 
-def saveToDynamodb(result):
+def saveToDynamodb(rdd):
 
-    data = result.collect()
-    with table.batch_writer() as batch:
+    data = rdd.collect()
+    '''with table.batch_writer() as batch:
         for items in data:
             for item in items[1]:
                 batch.put_item(
@@ -45,7 +45,7 @@ def saveToDynamodb(result):
                         'Carrier': item[0],
                         'DepDelay': decimal.Decimal(str(item[1]))
                     }
-                )
+                )'''
 
 
 def isFloat(row):
@@ -79,10 +79,10 @@ avgDepDelay = flightsDelay.updateStateByKey(updateFunction)
 
 avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1][2])))
 
-result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,merge))
+result2 = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,merge))
 
-result.foreachRDD(lambda rdd: printResult(rdd))
-result.foreachRDD(lamdda rdd: saveToDynamodb(rdd))
+result2.foreachRDD(lambda rdd: printResult(rdd))
+result2.foreachRDD(lambda rdd: saveToDynamodb(rdd))
 
 ssc.start()
 ssc.awaitTermination()
