@@ -94,8 +94,11 @@ avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1][2])))
 
 result2 = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,merge))
 
+result2 = result2.filter(lambda x: x[0] in ['CMI', 'BWI', 'MIA', 'LAX', 'IAH', 'SFO'])
+
+
 result2.foreachRDD(lambda rdd: printResult(rdd))
-result2.foreachRDD(lambda rdd: saveToDynamodb(rdd))
+#result2.foreachRDD(lambda rdd: saveToDynamodb(rdd))
 
 ssc.start()
 ssc.awaitTermination()
