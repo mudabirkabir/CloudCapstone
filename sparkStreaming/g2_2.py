@@ -10,7 +10,7 @@ import decimal
 #dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 #table = dynamodb.Table('Top10Airports2')
 dynamoDB = dynamodb2.connect_to_region('us-east-1')
-dyntable = Table('Top10Airports2', connection = dynamoDB)
+dyntable = Table('Top10AirportsTask2', connection = dynamoDB)
 
 def updateFunction(newValues, runningCount):
     if runningCount is None:
@@ -95,7 +95,7 @@ avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1][2])))
 
 result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,merge))
 
-result = result.filter(lambda x: x[0] in ['CMI', 'BWI', 'MIA', 'LAX', 'IAH', 'SFO'])
+result = result.filter(lambda x: x[0] in ['CMI', 'BWI', 'MIA', 'LAX', 'IAH', 'SFO', 'SRQ','CMH', 'JFK', 'SEA','BOS'])
 result.foreachRDD(lambda rdd: printResult(rdd))
 result.foreachRDD(lambda rdd: saveToDynamodb(rdd))
 

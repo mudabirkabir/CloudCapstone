@@ -10,7 +10,7 @@ import decimal
 #dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 #table = dynamodb.Table('MeanDelayBetweenAandB2')
 dynamoDB = dynamodb2.connect_to_region('us-east-1')
-dyntable = Table('MeanDelayBetweenAandB2', connection = dynamoDB)
+dyntable = Table('MeanDelayBetweenAandBTask2', connection = dynamoDB)
 
 def updateFunction(newValues, runningCount):
     if runningCount is None:
@@ -89,7 +89,7 @@ avgDepDelay = flightsDelay.updateStateByKey(updateFunction)
 
 result = avgDepDelay.map(lambda row: (row[0],row[1][2]))
 
-result = result.filter(lambda x: x[0] in [('CMI','ORD'),('IND','CMH'),('DFW','IAH'),('LAX','SFO'),('JFK','LAX'),('ATL','PHX')])
+result = result.filter(lambda x: x[0] in [('CMI','ORD'),('IND','CMH'),('DFW','IAH'),('LAX','SFO'),('JFK','LAX'),('ATL','PHX'),('LGA','BOS'),('BOS','LGA'),('OKC','DFW'),('MSP','ATL')])
 
 result.foreachRDD(lambda rdd: printResult(rdd))
 result.foreachRDD(lambda rdd: saveToDynamodb(rdd))

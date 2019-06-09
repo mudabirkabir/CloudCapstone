@@ -10,7 +10,7 @@ import datetime
 from time import sleep
 
 dynamoDB = dynamodb2.connect_to_region('us-east-1')
-dyntable = Table('BestArrivalTimeFinal2', connection = dynamoDB)
+dyntable = Table('BestArrivalTimeFinalTask2', connection = dynamoDB)
 
 def updateFunction(newValues, minimum):
     if minimum is None:
@@ -79,8 +79,8 @@ rdd = stream.map(lambda x: x[1])
 
 runningFlights = rdd.map(lambda line: line.split('|')).filter(isFloat)
 
-XY = [("CMI","ORD"),("JAX","DFW"),("SLC","BFL"),("LAX","SFO"),("DFW","ORD"),("LAX","ORD")]
-YZ = [("ORD","LAX"),("DFW","CRP"),("BFL","LAX"),("SFO","PHX"),("ORD","DFW"),("ORD","JFK")]
+XY = [("CMI","ORD"),("JAX","DFW"),("SLC","BFL"),("LAX","SFO"),("DFW","ORD"),("LAX","ORD"),("BOS","ATL"),("PHX","JFK"),("DFW","STL"),("LAX","MIA")]
+YZ = [("ORD","LAX"),("DFW","CRP"),("BFL","LAX"),("SFO","PHX"),("ORD","DFW"),("ORD","JFK"),("ATL","LAX"),("JFK","MSP"),("STL","ORD"),("MIA","LAX")]
 
 flightXY = runningFlights.filter(lambda x: float(x[8]) < 1200).map(extractInfo).filter(lambda x: (x[1][0],x[1][1]) in XY)
 
@@ -97,7 +97,11 @@ filterkeys = [("2008-03-04","CMI","ORD","LAX"),
               ("2008-04-01","SLC","BFL","LAX"),
               ("2008-07-12","LAX","SFO","PHX"),
               ("2008-06-10","DFW","ORD","DFW"),
-              ("2008-01-01","LAX","ORD","JFK")]
+              ("2008-01-01","LAX","ORD","JFK"),
+              ("2008-04-03","BOS","ATL","LAX"),
+              ("2008-09-07","PHX","JFK","MSP"),
+              ("2008-01-24","DFW","STL","ORD"),
+              ("2008-05-16","LAX","MIA","LAX")]
 
 result = totalArrDelay.filter(lambda x: x[0] in filterkeys)
 #result.foreachRDD(lambda rdd: printResult(rdd))
