@@ -1,6 +1,8 @@
 import os
 from pyspark import SparkConf, SparkContext
-from pyspark.streaming.kafka import KafkaUtils
+from pyspark.streaming import StreamingContext
+from pyspark.streaming.kafka import KafkaUtils,OffsetRange,TopicAndPartition
+#import boto3
 from boto import dynamodb2
 from boto.dynamodb2.table import Table,Item
 import decimal
@@ -15,7 +17,7 @@ def updateFunction(newValues, runningCount):
         runningCount = (0, 0, 0)
     depDelaySum = sum(newValues, runningCount[0])
     count    = runningCount[1] + len(newValues)
-    avgDepDelay = depDelaySum/count
+    avgDepDelay = depDelaySum/float(count)
     return (depDelaySum,count,avgDepDelay)
 
 def printResult(rdd):
@@ -34,11 +36,23 @@ def merge(list1, list2):
     list1.sort(key=lambda element: element[1])
     return list1[0:10]
 
-def saveToDynamodb(result):
+def saveToDynamodb(rdd):
 
     data = rdd.collect()
 
     for items in data:
+       old_entries = dyntable.query_2(Origin__eq=items[0])
+        old_dests = []
+        for entry in old_entries:
+            old_dests.append(entry['Dest'])
+        
+        new_dests = []
+        for item in items[1]:
+            new_dests.append(item[0])
+
+        delete_entries = list(set(old_dests)-set(new_dests))
+        for item in delete_entries:
+            dyntable.delete_item(Origin=items[0],Dest=item)
         for item in items[1]:
             entry = Item(dyntable, data={
                     'Origin': items[0],
@@ -58,6 +72,7 @@ def isFloat(row):
 sc = SparkContext(appName="top10airportsByairports")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
+ssc.checkpoint("s3://mudabircapstonecheckpoint/top10airportsByairport/")
 topicPartition = TopicAndPartition("airportsFull", 0)
 fromOffset = {topicPartition: 0}
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092"}
@@ -78,11 +93,13 @@ avgDepDelay = flightsDelay.updateStateByKey(updateFunction)
 
 avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1][2])))
 
-result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,sortAll))
+result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,merge))
 
+result = result.filter(lambda x: x[0] in ['CMI', 'BWI', 'MIA', 'LAX', 'IAH', 'SFO'])
+result.foreachRDD(lambda rdd: printResult(rdd))
 result.foreachRDD(lambda rdd: saveToDynamodb(rdd))
 
 
-sSc.start()
+ssc.start()
 ssc.awaitTermination()
                     
