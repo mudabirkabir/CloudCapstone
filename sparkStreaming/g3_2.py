@@ -21,21 +21,23 @@ def updateFunction(newValues, minimum):
 
 def printResult(rdd):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
+    print("*******")
     for airport in result:
         print(airport)
 
-def saveToDynamodb(result):
+def saveToDynamodb(rdd):
 
-    with table.batch_writer() as batch:
-        for item in result:
-            batch.put_item(
-                Item={
-                    'XYZ': str(item[0][1]+ '-' + item[0][2] + '-' + item[0][3]),
-                    'StartDate': str(item[0][0]),
-                    'info' : str(item[1][0]),
-                    'ArrDelay' : decimal.Decimal(str(item[1][1])) 
-                }
-            )
+    data = rdd.collect()
+
+    for item in data:
+        entry = Item(dyntable, data={
+                 'XYZ': str(item[0][1]+ '-' + item[0][2] + '-' + item[0][3]),
+                 'StartDate': str(item[0][0]),
+                 'info' : str(item[1][0]),
+                 'ArrDelay' : decimal.Decimal(str(item[1][1])) 
+            }
+        )
+        entry.save(overwrite=True)
 
 
 def isFloat(row):
@@ -80,12 +82,20 @@ flightYZ = runningFlights.filter(lambda x: float(x[8]) > 1200).map(lambda flight
 
 flightXYZ = flightXY.join(flightYZ)
 
-route = flightXYZ.map(lambda (x,y): ((x[0],y[0][0].encode('ascii','ignore'),x[1].encode('ascii','ignore'),y[1][1].encode('ascii','ignore')),(y,y[0][5]+y[1][5])))
+route = flightXYZ.map(lambda (x,y): ((str(x[0]),y[0][0].encode('ascii','ignore'),x[1].encode('ascii','ignore'),y[1][1].encode('ascii','ignore')),(y,y[0][5]+y[1][5])))
 
 totalArrDelay = route.updateStateByKey(updateFunction)
 
+filterkeys = [("2008-03-04","CMI","ORD","LAX"),
+              ("2008-09-09","JAX","DFW","CRP"),
+              ("2008-04-01","SLC","BFL","LAX"),
+              ("2008-06-10","LAX","SFO","PHX"),
+              ("2008-01-01","DFW","ORD","DFW"),
+              ("2008-07-12","LAX","ORD","JFK")]
 
-totalArrDelay.foreachRDD(lambda rdd: printResult(rdd))
+result = totalArrDelay.map(lambda x: x[0] in filterkeys)
+result.foreachRDD(lambda rdd: printResult(rdd))
+result.foreachRDD(lambda rdd: saveToDynamodb(rdd))
 
 
 ssc.start()
