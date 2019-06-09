@@ -68,6 +68,7 @@ def isFloat(row):
 sc = SparkContext(appName="AtoBdelay")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
+ssc.checkpoint("s3://mudabircapstonecheckpoint/meanDelayBetweenAandB/")
 topicPartition = TopicAndPartition("airportsFull", 0)
 fromOffset = {topicPartition: 0}
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092"}
