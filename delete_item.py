@@ -6,4 +6,9 @@ import decimal
 dynamoDB = dynamodb2.connect_to_region('us-east-1')
 dyntable = Table('Top10Carriers2', connection = dynamoDB)
 
-dyntable.delete_item(Origin='CMI')
+entries = dyntable.query_2(Origin="IAH")
+
+for entry in entries:
+    print entry
+
+
