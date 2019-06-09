@@ -30,6 +30,8 @@ def saveToDynamodb(rdd):
     data = rdd.collect()
 
     for item in data:
+        print("*****---****")
+        print(item)
         xyz = str(item[0][1]) + '-' + str(item[0][2]) + '-' + str(item[0][3])
         entry = Item(dyntable, data={
                  'XYZ': xyz,
@@ -77,9 +79,12 @@ rdd = stream.map(lambda x: x[1])
 
 runningFlights = rdd.map(lambda line: line.split('|')).filter(isFloat)
 
-flightXY = runningFlights.filter(lambda x: float(x[8]) < 1200).map(extractInfo)
+XY = [("CMI","ORD"),("JAX","DFW"),("SLC","BFL"),("LAX","SFO"),("DFW","ORD"),("LAX","ORD")]
+YZ = [("ORD","LAX"),("DFW","CRP"),("BFL","LAX"),("SFO","PHX"),("ORD","DFW"),("ORD","JFK")]
 
-flightYZ = runningFlights.filter(lambda x: float(x[8]) > 1200).map(lambda flight: extractInfo(flight,True))
+flightXY = runningFlights.filter(lambda x: float(x[8]) < 1200).map(extractInfo).filter(lambda x: (x[1][0],x[1][1]) in XY)
+
+flightYZ = runningFlights.filter(lambda x: float(x[8]) > 1200).map(lambda flight: extractInfo(flight,True)).filter(lambda x: (x[1][0],x[1][1]) in YZ)
 
 flightXYZ = flightXY.join(flightYZ)
 
