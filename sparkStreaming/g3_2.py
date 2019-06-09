@@ -31,7 +31,7 @@ def saveToDynamodb(rdd):
 
     for item in data:
         entry = Item(dyntable, data={
-                 'XYZ': str(item[0][1]+ '-' + item[0][2] + '-' + item[0][3]),
+                 'XYZ': str(item[0][1]) + '-' + str(item[0][2]) + '-' + str(item[0][3]),
                  'StartDate': str(item[0][0]),
                  'info' : str(item[1][0]),
                  'ArrDelay' : decimal.Decimal(str(item[1][1])) 
@@ -82,7 +82,7 @@ flightYZ = runningFlights.filter(lambda x: float(x[8]) > 1200).map(lambda flight
 
 flightXYZ = flightXY.join(flightYZ)
 
-route = flightXYZ.map(lambda (x,y): ((str(x[0]),y[0][0].encode('ascii','ignore'),x[1].encode('ascii','ignore'),y[1][1].encode('ascii','ignore')),(y,y[0][5]+y[1][5])))
+route = flightXYZ.map(lambda (x,y): ((str(x[0]),str(y[0][0]),str(x[1]),str(y[1][1])),(y,y[0][5]+y[1][5])))
 
 totalArrDelay = route.updateStateByKey(updateFunction)
 
