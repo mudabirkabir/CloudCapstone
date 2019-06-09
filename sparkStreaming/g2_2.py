@@ -41,7 +41,7 @@ def saveToDynamodb(rdd):
     data = rdd.collect()
 
     for items in data:
-       old_entries = dyntable.query_2(Origin__eq=items[0])
+        old_entries = dyntable.query_2(Origin__eq=items[0])
         old_dests = []
         for entry in old_entries:
             old_dests.append(entry['Dest'])
