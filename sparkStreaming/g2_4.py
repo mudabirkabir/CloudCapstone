@@ -15,10 +15,10 @@ dyntable = Table('MeanDelayBetweenAandB2', connection = dynamoDB)
 def updateFunction(newValues, runningCount):
     if runningCount is None:
         runningCount = (0, 0, 0)
-    depDelaySum = sum(newValues, runningCount[0])
+    ArrDelaySum = sum(newValues, runningCount[0])
     count    = runningCount[1] + len(newValues)
-    avgDepDelay = depDelaySum/float(count)
-    return (depDelaySum,count, avgDepDelay)
+    avgArrDelay = ArrDelaySum/float(count)
+    return (ArrDelaySum,count, avgArrDelay)
 
 def printResult(rdd):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
@@ -42,7 +42,7 @@ def saveToDynamodb(rdd):
 
     for item in data:
         entry = Item(dyntable, data={
-                'AtoB': item[0],
+                'AtoB': str(item[0]),
                 'ArrDelay': decimal.Decimal(str(item[1]))
             }
         )
@@ -83,7 +83,7 @@ Year|Month|date|DayofWeek|UniqueCarrier|FlightNum|Origin|Dest|CRSDeptime|DepDela
 
 rdd = stream.map(lambda x: x[1])
 
-flightsDelay = rdd.map(lambda line: line.split('|')).filter(isFloat).map(lambda row: ((row[6],row[7]),(float(row[10]),1)))
+flightsDelay = rdd.map(lambda line: line.split('|')).filter(isFloat).map(lambda row: ((row[6],row[7]),float(row[10])))
 
 avgDepDelay = flightsDelay.updateStateByKey(updateFunction)
 
@@ -93,6 +93,6 @@ result = avgDepDelay.map(lambda row: (row[0],row[1][2]))
 result.foreachRDD(lambda rdd: printResult(rdd))
 result.foreachRDD(lambda rdd: saveToDynamodb(rdd))
 
-scc.start()
+ssc.start()
 ssc.awaitTermination()
                     
