@@ -1,20 +1,24 @@
 import os
 from pyspark import SparkConf, SparkContext
-from pyspark.streaming.kafka import KafkaUtils
-import boto3
+from pyspark.streaming import StreamingContext
+from pyspark.streaming.kafka import KafkaUtils,OffsetRange,TopicAndPartition
+#import boto3
+from boto import dynamodb2
+from boto.dynamodb2.table import Table,Item
 import decimal
 
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-
-table = dynamodb.Table('MeanDelayBetweenAandB2')
+#dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+#table = dynamodb.Table('MeanDelayBetweenAandB2')
+dynamoDB = dynamodb2.connect_to_region('us-east-1')
+dyntable = Table('MeanDelayBetweenAandB2', connection = dynamoDB)
 
 def updateFunction(newValues, runningCount):
     if runningCount is None:
         runningCount = (0, 0, 0)
-    depDelaySum = sum(newValues[0], runningCount[0])
-    count    = runningCount[1] + newValues[1]
-    avgDepDelay = depDelaySum/count
-    return avgDepDelay
+    depDelaySum = sum(newValues, runningCount[0])
+    count    = runningCount[1] + len(newValues)
+    avgDepDelay = depDelaySum/float(count)
+    return (depDelaySum,count, avgDepDelay)
 
 def printResult(rdd):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
@@ -28,21 +32,30 @@ def sortLocal(top10, newVal):
 
 def merge(list1, list2):
     for x in list2:
-        list1.append(list2)
+        list1.append(x)
     list1.sort(key=lambda element: element[1])
     return list1[0:10]
 
-def saveToDynamodb(result):
+def saveToDynamodb(rdd):
 
-    data = result.collect()
-    with table.batch_writer() as batch:
-        for item in data:
-            batch.put_item(
-                Item={
-                    'AtoB': str(item[0]),
-                    'ArrDelay': decimal.Decimal(str(item[1]))
-                }
-            )
+    data = rdd.collect()
+
+    for item in data:
+        entry = Item(dyntable, data={
+                'AtoB': item[0],
+                'ArrDelay': decimal.Decimal(str(item[1]))
+            }
+        )
+        entry.save(overwrite=True)
+
+    # with table.batch_writer() as batch:
+    #     for item in data:
+    #         batch.put_item(
+    #             Item={
+    #                 'AtoB': str(item[0]),
+    #                 'ArrDelay': decimal.Decimal(str(item[1]))
+    #             }
+    #         )
 
 
 def isFloat(row):
@@ -52,7 +65,7 @@ def isFloat(row):
     except:
         return False
 
-sc = SparkContext(appName="airportsToAirportsDelay")
+sc = SparkContext(appName="AtoBdelay")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
 topicPartition = TopicAndPartition("airportsFull", 0)
@@ -73,13 +86,12 @@ flightsDelay = rdd.map(lambda line: line.split('|')).filter(isFloat).map(lambda 
 
 avgDepDelay = flightsDelay.updateStateByKey(updateFunction)
 
-avgDepDelay = avgDepDelay.map(lambda row: (row[0][0], (row[0][1],row[1])))
-
-result = avgDepDelay.transform(lambda rdd: rdd.aggregateByKey([],sortLocal,sortAll))
-
-result.foreachRDD(saveToDynamodb)
+result = avgDepDelay.map(lambda row: (row[0],row[1][2]))
 
 
-sSc.start()
+result.foreachRDD(lambda rdd: printResult(rdd))
+result.foreachRDD(lambda rdd: saveToDynamodb(rdd))
+
+scc.start()
 ssc.awaitTermination()
                     

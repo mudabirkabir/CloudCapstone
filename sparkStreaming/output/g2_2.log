@@ -1,0 +1,19 @@
+19/06/09 04:27:36 INFO CheckpointWriter: Checkpoint for time 1560054456000 ms saved to file 's3://mudabircapstonecheckpoint/top10airportsByairport/checkpoint-1560054456000', took 18158 bytes and 259 ms
+(u'MIA', [(u'SHV', 0.0), (u'BUF', 1.0), (u'SAN', 1.710382513661202), (u'SLC', 2.5371900826446283), (u'HOU', 2.912199124726477), (u'ISP', 3.647398843930636), (u'MEM', 3.7451066224751424), (u'PSE', 3.975845410628019), (u'TLH', 4.2614844746916205), (u'MCI', 4.612244897959184)])
+(u'LAX', [(u'SDF', -16.0), (u'IDA', -7.0), (u'DRO', -6.0), (u'RSW', -3.0), (u'LAX', -2.0), (u'BZN', -0.7272727272727273), (u'PIH', 0.0), (u'IYK', 1.2698247440569148), (u'MFE', 1.3764705882352941), (u'MEM', 1.869798722663054)])
+(u'CMI', [(u'ABI', -7.0), (u'PIT', 1.1024305555555556), (u'CVG', 1.8947616800377536), (u'DAY', 3.116235294117647), (u'STL', 3.981673306772908), (u'PIA', 4.591891891891892), (u'DFW', 5.944142746314973), (u'ATL', 6.665137614678899), (u'ORD', 8.194098143236074)])
+(u'BWI', [(u'SAV', -7.0), (u'MLB', 1.155367231638418), (u'DAB', 1.4695945945945945), (u'SRQ', 1.5884838880084522), (u'IAD', 1.7909407665505226), (u'UCA', 3.6541698546289214), (u'CHO', 3.744927536231884), (u'GSP', 4.197686645636172), (u'OAJ', 4.471111111111111), (u'SJU', 4.473430447271235)])
+(u'SFO', [(u'SDF', -10.0), (u'MSO', -4.0), (u'PIH', -3.0), (u'LGA', -1.7575757575757576), (u'PIE', -1.3410404624277457), (u'OAK', -0.813200498132005), (u'FAR', 0.0), (u'BNA', 2.425966447848286), (u'MEM', 3.302482299752623), (u'SCK', 4.0)])
+(u'IAH', [(u'MSN', -2.0), (u'AGS', -0.6187904967602592), (u'MLI', -0.5), (u'EFD', 1.8877082136703045), (u'HOU', 2.172036985149902), (u'JAC', 2.570588235294118), (u'MTJ', 2.9501569858712715), (u'RNO', 3.22158438576349), (u'BPT', 3.5995325282430852), (u'VCT', 3.6119087837837838)])
+19/06/09 04:27:36 INFO JobScheduler: Finished job streaming job 1560054456000 ms.0 from job set of time 1560054456000 ms
+19/06/09 04:27:36 INFO JobScheduler: Starting job streaming job 1560054456000 ms.1 from job set of time 1560054456000 ms
+19/06/09 04:27:36 INFO JobScheduler: Finished job streaming job 1560054456000 ms.1 from job set of time 1560054456000 ms
+19/06/09 04:27:36 INFO JobScheduler: Total delay: 0.871 s for time 1560054456000 ms (execution: 0.757 s)
+19/06/09 04:27:36 INFO KafkaRDD: Removing RDD 34281 from persistence list
+19/06/09 04:27:36 INFO JobGenerator: Checkpointing graph for time 1560054456000 ms
+19/06/09 04:27:36 INFO DStreamGraph: Updating checkpoint data for time 1560054456000 ms
+19/06/09 04:27:36 INFO DStreamGraph: Updated checkpoint data for time 1560054456000 ms
+19/06/09 04:27:36 INFO CheckpointWriter: Submitted checkpoint of time 1560054456000 ms to writer queue
+19/06/09 04:27:36 INFO CheckpointWriter: Saving checkpoint for time 1560054456000 ms to file 's3://mudabircapstonecheckpoint/top10airportsByairport/checkpoint-1560054456000'
+19/06/09 04:27:37 INFO CheckpointWriter: Deleting s3://mudabircapstonecheckpoint/top10airportsByairport/checkpoint-1560054441000
+19/06/09 04:27:37 INFO CheckpointWriter: Checkpoint for time 1560054456000 ms saved to file 's3://mudabircapstonecheckpoint/top10airportsByairport/checkpoint-1560054456000', took 18139 bytes and 723 ms
