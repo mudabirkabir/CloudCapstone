@@ -89,6 +89,7 @@ avgDepDelay = flightsDelay.updateStateByKey(updateFunction)
 
 result = avgDepDelay.map(lambda row: (row[0],row[1][2]))
 
+result = result.filter(lambda x: x[0] in [('CMI','ORD'),('IND','CMH'),('DFW','IAH'),('LAX','SFO'),('JFK','LAX'),('ATL','PHX')])
 
 result.foreachRDD(lambda rdd: printResult(rdd))
 result.foreachRDD(lambda rdd: saveToDynamodb(rdd))
