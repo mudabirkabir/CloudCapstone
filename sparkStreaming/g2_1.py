@@ -51,6 +51,19 @@ def saveToDynamodb(rdd):
                     }
                 )'''
     for items in data:
+        old_entries = dyntable.query_2(Origin__eq=items[0])
+        old_carriers = []
+        for entry in old_entries:
+            old_carriers.append(entry['Carrier'])
+        
+        new_carriers = []
+        for item in items[1]:
+            new_carriers.append(item[0])
+
+        delete_entries = list(set(old_carriers)-set(new_carriers))
+        for item in delete_entries:
+            dyntable.delete_item(Origin=items[0],Carrier=item)
+
         for item in items[1]:
             entry = Item(dyntable, data={
                     'Origin': items[0],
@@ -98,7 +111,7 @@ result2 = result2.filter(lambda x: x[0] in ['CMI', 'BWI', 'MIA', 'LAX', 'IAH', '
 
 
 result2.foreachRDD(lambda rdd: printResult(rdd))
-#result2.foreachRDD(lambda rdd: saveToDynamodb(rdd))
+result2.foreachRDD(lambda rdd: saveToDynamodb(rdd))
 
 ssc.start()
 ssc.awaitTermination()
