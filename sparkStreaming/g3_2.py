@@ -30,8 +30,9 @@ def saveToDynamodb(rdd):
     data = rdd.collect()
 
     for item in data:
+        xyz = str(item[0][1]) + '-' + str(item[0][2]) + '-' + str(item[0][3])
         entry = Item(dyntable, data={
-                 'XYZ': str(item[0][1]) + '-' + str(item[0][2]) + '-' + str(item[0][3]),
+                 'XYZ': xyz,
                  'StartDate': str(item[0][0]),
                  'info' : str(item[1][0]),
                  'ArrDelay' : decimal.Decimal(str(item[1][1])) 
