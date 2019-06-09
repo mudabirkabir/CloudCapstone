@@ -100,7 +100,7 @@ filterkeys = [("2008-03-04","CMI","ORD","LAX"),
               ("2008-07-12","LAX","ORD","JFK")]
 
 result = totalArrDelay.map(lambda x: x[0] in filterkeys)
-result.foreachRDD(lambda rdd: printResult(rdd))
+#result.foreachRDD(lambda rdd: printResult(rdd))
 result.foreachRDD(lambda rdd: saveToDynamodb(rdd))
 
 
