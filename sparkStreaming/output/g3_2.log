@@ -1,12 +1,15 @@
+9/06/09 12:24:17 INFO InputInfoTracker: remove old batch metadata: 1560083025000 ms
+19/06/09 12:24:17 INFO CheckpointWriter: Checkpoint for time 1560083055000 ms saved to file 's3://mudabircapstonecheckpoint/bestFlights/checkpoint-1560083055000', took 22196 bytes and 360 ms
+19/06/09 12:24:17 INFO DStreamGraph: Clearing checkpoint data for time 1560083055000 ms
 *****---****
 (('2008-09-09', 'JAX', 'DFW', 'CRP'), (((u'JAX', u'DFW', u'AA', u'845', u'0725', 1.0), (u'DFW', u'CRP', u'MQ', u'3627', u'1645', -7.0)), -6.0))
 *****---****
-(('2008-07-12', 'LAX', 'ORD', 'JFK'), (((u'LAX', u'ORD', u'AA', u'1960', u'1025', -20.0), (u'ORD', u'JFK', u'AA', u'1362', u'1255', -21.0)), -41.0))
+(('2008-01-01', 'LAX', 'ORD', 'JFK'), (((u'LAX', u'ORD', u'UA', u'944', u'0705', 1.0), (u'ORD', u'JFK', u'B6', u'918', u'1900', -7.0)), -6.0))
 *****---****
-(('2008-01-01', 'DFW', 'ORD', 'DFW'), (((u'DFW', u'ORD', u'UA', u'578', u'0658', -10.0), (u'ORD', u'DFW', u'UA', u'1147', u'1445', -16.0)), -26.0))
+(('2008-07-12', 'LAX', 'SFO', 'PHX'), (((u'LAX', u'SFO', u'WN', u'3534', u'0650', -13.0), (u'SFO', u'PHX', u'US', u'412', u'1925', -19.0)), -32.0))
 *****---****
 (('2008-04-01', 'SLC', 'BFL', 'LAX'), (((u'SLC', u'BFL', u'OO', u'3755', u'1100', 12.0), (u'BFL', u'LAX', u'OO', u'5429', u'1455', 6.0)), 18.0))
 *****---****
-(('2008-06-10', 'LAX', 'SFO', 'PHX'), (((u'LAX', u'SFO', u'UA', u'889', u'0752', -21.0), (u'SFO', u'PHX', u'US', u'128', u'1535', -17.0)), -38.0))
+(('2008-06-10', 'DFW', 'ORD', 'DFW'), (((u'DFW', u'ORD', u'UA', u'1104', u'0700', -21.0), (u'ORD', u'DFW', u'AA', u'2341', u'1645', -10.0)), -31.0))
 *****---****
 (('2008-03-04', 'CMI', 'ORD', 'LAX'), (((u'CMI', u'ORD', u'MQ', u'4278', u'0710', -14.0), (u'ORD', u'LAX', u'AA', u'607', u'1950', -24.0)), -38.0))
