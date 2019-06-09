@@ -1,0 +1,15 @@
+19/06/09 08:01:15 INFO CheckpointWriter: Submitted checkpoint of time 1560067275000 ms to writer queue
+19/06/09 08:01:15 INFO CheckpointWriter: Saving checkpoint for time 1560067275000 ms to file 's3://mudabircapstonecheckpoint/meanDelayBetweenAandB/checkpoint-1560067275000'
+19/06/09 08:01:15 INFO CheckpointWriter: Deleting s3://mudabircapstonecheckpoint/meanDelayBetweenAandB/checkpoint-1560067260000.bk
+19/06/09 08:01:15 INFO CheckpointWriter: Checkpoint for time 1560067275000 ms saved to file 's3://mudabircapstonecheckpoint/meanDelayBetweenAandB/checkpoint-1560067275000', took 17199 bytes and 251 ms
+((u'CMI', u'ORD'), 10.14366290643663)
+((u'JFK', u'LAX'), 6.635119155270517)
+((u'LAX', u'SFO'), 9.589282731105238)
+((u'DFW', u'IAH'), 7.617332798592114)
+((u'ATL', u'PHX'), 9.021341881513989)
+((u'IND', u'CMH'), 2.8911367050575865)
+19/06/09 08:01:15 INFO JobScheduler: Finished job streaming job 1560067275000 ms.0 from job set of time 1560067275000 ms
+19/06/09 08:01:15 INFO JobScheduler: Starting job streaming job 1560067275000 ms.1 from job set of time 1560067275000 ms
+19/06/09 08:01:15 INFO JobScheduler: Finished job streaming job 1560067275000 ms.1 from job set of time 1560067275000 ms
+19/06/09 08:01:15 INFO JobScheduler: Total delay: 0.663 s for time 1560067275000 ms (execution: 0.558 s)
+19/06/09 08:01:15 INFO KafkaRDD: Removing RDD 32479 from persistence list

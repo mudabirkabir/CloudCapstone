@@ -1,35 +1,28 @@
 import os
 from pyspark import SparkConf, SparkContext
-from pyspark.streaming.kafka import KafkaUtils
-import boto3
+from pyspark.streaming import StreamingContext
+from pyspark.streaming.kafka import KafkaUtils,OffsetRange,TopicAndPartition
+from boto import dynamodb2
+from boto.dynamodb2.table import Table,Item
+#import boto3
 import decimal
+import datetime
+from time import sleep
 
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+dynamoDB = dynamodb2.connect_to_region('us-east-1')
+dyntable = Table('BestArrivalTimeFinal2', connection = dynamoDB)
 
-table = dynamodb.Table('MeanDelayBetweenAandB2')
-
-def updateFunction(newValue, minimum):
+def updateFunction(newValues, minimum):
     if minimum is None:
-        return newValue
-    if newValue[1] < minimum[1]:
-        minimum = newValue
+        minimum =  newValues[0]
+    newValues.append(minimum)
+    minimum = min(newValues,key=lambda x: x[1])
     return minimum
 
 def printResult(rdd):
     result = rdd.take(10)#Ordered(10,key=lambda x:-x[1])
     for airport in result:
         print(airport)
-
-def sortLocal(top10, newVal):
-    top10.append(newVal)
-    top10.sort(key=lambda element: element[1])
-    return top10[0:10]
-
-def merge(list1, list2):
-    for x in list2:
-        list1.append(list2)
-    list1.sort(key=lambda element: element[1])
-    return list1[0:10]
 
 def saveToDynamodb(result):
 
@@ -61,15 +54,15 @@ def extractInfo(flight,pm=False):
         flightDate -= datetime.timedelta(days=2)
     return ((str(flightDate),yDest),(flight[6], flight[7] , flight[4],flight[5], flight[8],float(flight[10].strip('\"'))))
 
-sc = SparkContext(appName="airportsToAirportsDelay")
+sc = SparkContext(appName="bestFlights")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 3)
-topicPartition = TopicAndPartition("airportsAll2", 0)
+topicPartition = TopicAndPartition("airportsFull", 0)
 fromOffset = {topicPartition: 0}
 kafkaParams = {"metadata.broker.list": "b-2.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-3.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092,b-1.kafkacluster.qa2zr3.c2.kafka.us-east-1.amazonaws.com:9092"}
 
 
-stream = KafkaUtils.createDirectStream(ssc, ['airportsAll2'], kafkaParams, fromOffsets = fromOffset)
+stream = KafkaUtils.createDirectStream(ssc, ['airportsFull'], kafkaParams, fromOffsets = fromOffset)
 
 '''
 The incoming data format is
@@ -91,7 +84,7 @@ route = flightXYZ.map(lambda (x,y): ((x[0],y[0][0].encode('ascii','ignore'),x[1]
 totalArrDelay = route.updateStateByKey(updateFunction)
 
 
-totalArrDelay.foreachRDD(saveToDynamodb)
+totalArrDelay.foreachRDD(lambda rdd: printResult(rdd))
 
 
 sSc.start()
