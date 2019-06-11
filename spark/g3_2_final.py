@@ -81,6 +81,7 @@ flightYZ = runningFlights.filter(lambda x: float(x[25].strip('\"')) > 1200).map(
 #this gives all flights landing in Y before noon and all flights departing from Y two days later
 flightXYZ = flightXY.join(flightYZ)
 
+#map to (data,X,Y,Z) -> (Complete journey info, total arrival delay)
 route = flightXYZ.map(lambda (x,y): ((x[0],y[0][0].encode('ascii','ignore'),x[1].encode('ascii','ignore'),y[1][1].encode('ascii','ignore')),(y,y[0][5]+y[1][5])))
 
 # For X->Y->Z route, filter the flight combo with minimum arrival delay
